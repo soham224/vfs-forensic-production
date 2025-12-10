@@ -1,0 +1,16 @@
+FROM python:3.8.7-slim
+MAINTAINER Mihir Rajput
+
+# Install dependencies
+RUN apt-get update \
+    && apt-get install -y ffmpeg \
+    && apt-get install default-libmysqlclient-dev python3-dev gcc -y \
+    && pip install --upgrade pip 
+
+COPY autoserving-req.txt ./
+
+RUN pip install -r autoserving-req.txt
+
+COPY . ./
+
+CMD uvicorn main:app --host 0.0.0.0 --port 80

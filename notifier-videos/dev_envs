@@ -1,0 +1,18 @@
+# Logging
+export LOG_BASE_DIRECTORY=./
+
+# MySQL DB
+export MYSQL_USER=root
+export MYSQL_PASS=Root@123
+export MYSQL_HOST=localhost
+export MYSQL_PORT=3306
+export MYSQL_DB_NAME=vfs-try-1
+
+# Notifier
+export FOLDER_POLL_INTERVAL=5
+export CLIENT_VIDEO_DIR=/home/dev1079/frames/vfs/client
+
+# URL construction (no-copy mode)
+export NGINX_SERVE_DIRECTORY=/home/dev1079/frames/vfs/client
+export BASE_PATH=/home/dev1079
+export NGINX_BASE_URL=http://192.168.11.97
