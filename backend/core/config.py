@@ -79,7 +79,7 @@ class Settings(BaseSettings):
     CHECK_RTSP_DATA = os.environ["CHECK_RTSP_DATA"]
     LICENSE_SECRET_KEY = os.environ["LICENSE_SECRET_KEY"]
     TOTAL_CHAIRS_COUNT = json.loads(os.environ["TOTAL_CHAIRS_COUNT"])
-    SUSPECT_DETAILS_API = os.environ["SUSPECT_DETAILS_API"]
+    # SUSPECT_DETAILS_API = os.environ["SUSPECT_DETAILS_API"]
     LOCAL_VIDEOS_PATH = os.environ["LOCAL_VIDEOS_PATH"]
     LOCAL_IP_URL = os.environ["LOCAL_IP_URL"]
     LOCAL_NGINX_PATH = os.environ["LOCAL_NGINX_PATH"]
