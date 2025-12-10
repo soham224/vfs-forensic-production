@@ -1,0 +1,30 @@
+{
+  "dates": [
+    {
+      "date": "2025-01-20",
+      "tasks": [
+        {
+          "time": "10:00 AM",
+          "details": ["Task 1"]
+        },
+        {
+          "time": "2:00 PM",
+          "details": ["Task 2"]
+        }
+      ]
+    },
+    {
+      "date": "2025-01-21",
+      "tasks": [
+        {
+          "time": "9:00 AM",
+          "details": ["Task 3"]
+        },
+        {
+          "time": "1:00 PM",
+          "details": ["Task 4", "Task 5"]
+        }
+      ]
+    }
+  ]
+}
