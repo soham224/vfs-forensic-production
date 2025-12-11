@@ -16,12 +16,12 @@ router = APIRouter()
 @router.post(
     "/license/generate",
     response_model=schemas.LicenseCreateResponse,
-    tags=["license"],
+    tags=["License"],
 )
 def generate_license_key(
-        *,
-        db: Session = Depends(deps.get_db),
-        current_user=Depends(deps.get_current_active_superuser),
+    *,
+    db: Session = Depends(deps.get_db),
+    current_user=Depends(deps.get_current_active_superuser),
 ):
     """
     Generate a new license key (superuser only), store the encrypted value,

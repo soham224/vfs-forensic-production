@@ -1,49 +1,11 @@
 import os
-import urllib.parse
-from logger_config import setup_logger
+
+import shutil
+import subprocess
 from datetime import datetime
-import urllib.parse
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker, scoped_session
-from config import *
+from sqlalchemy import text
+from config import logger, INTERNAL_VIDEO_FOLDER_PATH, NGINX_BASE_URL, BASE_PATH, SessionLocal
 
-logger = setup_logger()
-
-
-# Path mapping: Convert /app/... to /home/dev1079/...
-def convert_container_path_to_host(container_path):
-    """
-    Converts a container path like /app/videos_to_process/... to its host equivalent.
-    """
-    # try:
-    #     if container_path.startswith(CONTAINER_CLIENT_VIDEO_DIR):
-    #         return container_path.replace(
-    #             CONTAINER_CLIENT_VIDEO_DIR, HOST_CLIENT_VIDEO_DIR, 1
-    #         )
-    #     elif container_path.startswith(CONTAINER_NGINX_INTERNAL_PATH):
-    #         return container_path.replace(
-    #             CONTAINER_NGINX_INTERNAL_PATH, HOST_NGINX_INTERNAL_PATH, 1
-    #         )
-    #     return container_path
-    # except Exception as e:
-    #     logger.error(f"Failed to convert container path to host: {e}", exc_info=True)
-    #     return None
-
-
-try:
-    encoded_password = urllib.parse.quote_plus(MYSQL_PASS)
-    SQLALCHEMY_DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{encoded_password}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB_NAME}"
-    logger.debug(f"SQLALCHEMY_DATABASE_URL: {SQLALCHEMY_DATABASE_URL}")
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
-    SessionLocal = scoped_session(
-        sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    )
-
-    logger.debug("Global SQLAlchemy engine and session created.")
-
-except Exception as e:
-    logger.critical(f"Failed to initialize DB engine: {e}", exc_info=True)
-    raise
 
 
 def get_db_session():
@@ -55,51 +17,114 @@ def get_db_session():
         raise
 
 
-def copy_and_log_video(file_path):
+def convert_to_mp4(input_path, output_path):
     try:
-        filename = os.path.basename(file_path)
-        destination_path = file_path
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-        # Build URL based on BASE_PATH and NGINX_BASE_URL
-        try:
-            # Only construct URL if file resides under BASE_PATH to avoid broken URLs
-            common = os.path.commonpath([os.path.abspath(destination_path), os.path.abspath(BASE_PATH)])
-            if common == os.path.abspath(BASE_PATH):
-                rel_from_base = os.path.relpath(destination_path, start=BASE_PATH)
-                rel_from_base = rel_from_base.replace("\\", "/").lstrip("/")
-                video_url = f"{NGINX_BASE_URL.rstrip('/')}/{rel_from_base}"
-            else:
-                logger.warning(
-                    f"File path {destination_path} is outside BASE_PATH {BASE_PATH}; storing empty des_url"
-                )
-                video_url = ""
-        except Exception as e:
-            logger.error(f"Failed to construct URL for {destination_path}: {e}")
-            video_url = ""
+        cmd = [
+            'ffmpeg',
+            '-i', input_path,
+            '-c:v', 'libx264',
+            '-c:a', 'aac',
+            '-strict', 'experimental',
+            '-y',
+            output_path
+        ]
 
-        now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        session = get_db_session()
-
-        query = text(
-            """
-            INSERT INTO videos (main_dir, des_video_path, status, created_date, des_url)
-            VALUES (:main_dir, :des_video_path, :status, :create_date, :des_url)
-            """
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
         )
 
-        session.execute(
-            query,
-            {
-                "main_dir": os.path.dirname(file_path),
-                "des_video_path": destination_path,
-                "status": 1,
-                "create_date": now_str,
-                "des_url": video_url,
-            },
-        )
+        if result.returncode != 0:
+            logger.error(f"FFmpeg conversion failed for {input_path}: {result.stderr}")
+            return False
 
-        session.commit()
-        logger.info(f"Registered video in DB (no copy): {filename}")
+        logger.info(f"Converted to MP4: {output_path}")
+        return True
 
     except Exception as e:
-        logger.error(f"Failed to register/log video {file_path}: {e}")
+        logger.error(f"Error converting {input_path} -> {output_path}: {e}")
+        return False
+
+
+def copy_and_log_video(file_path):
+    try:
+        if not os.path.exists(file_path):
+            logger.error(f"Source file missing: {file_path}")
+            return
+
+        filename = os.path.basename(file_path)
+        base_name, ext = os.path.splitext(filename)
+        ext = ext.lower()
+
+        # OUTPUT ALWAYS MP4
+        output_filename = f"{base_name}.mp4"
+        destination_path = os.path.join(INTERNAL_VIDEO_FOLDER_PATH, output_filename)
+
+        os.makedirs(INTERNAL_VIDEO_FOLDER_PATH, exist_ok=True)
+
+        # ==================================================================
+        # RULE 1: If the MP4 already exists → DO NOTHING (avoid duplicates)
+        # ==================================================================
+        if os.path.exists(destination_path):
+            logger.info(f"MP4 already exists, skipping: {destination_path}")
+            return
+
+        # ==================================================================
+        # RULE 2: If uploaded is MP4 → Copy only once
+        # ==================================================================
+        if ext == ".mp4":
+            shutil.copy2(file_path, destination_path)
+            logger.info(f"Copied MP4 to storage: {destination_path}")
+
+        # ==================================================================
+        # RULE 3: If uploaded is NOT MP4 → Convert only once
+        # ==================================================================
+        else:
+            logger.info(f"Converting non-MP4: {file_path} -> {destination_path}")
+
+            if not convert_to_mp4(file_path, destination_path):
+                logger.error(f"FFmpeg conversion failed: {file_path}")
+                return
+
+            logger.info(f"Converted to MP4: {destination_path}")
+
+        # ==================================================================
+        # Build Public URL
+        # ==================================================================
+        abs_dest = os.path.abspath(destination_path)
+        abs_base = os.path.abspath(BASE_PATH)
+
+        if abs_dest.startswith(abs_base):
+            rel = os.path.relpath(abs_dest, abs_base).replace("\\", "/")
+            video_url = f"{NGINX_BASE_URL.rstrip('/')}/{rel.lstrip('/')}"
+        else:
+            video_url = ""
+
+        # ==================================================================
+        # DB INSERT (ensure only MP4 is inserted)
+        # ==================================================================
+        session = get_db_session()
+
+        query = text("""
+            INSERT INTO videos (main_dir, des_video_path, status, created_date, des_url)
+            VALUES (:main_dir, :des_video_path, :status, :create_date, :des_url)
+        """)
+
+        session.execute(query, {
+            "main_dir": INTERNAL_VIDEO_FOLDER_PATH,
+            "des_video_path": destination_path,
+            "status": 1,
+            "create_date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+            "des_url": video_url,
+        })
+
+        session.commit()
+        logger.info(f"DB entry created for MP4: {destination_path}")
+
+    except Exception as e:
+        logger.error(f"Error in copy_and_log_video: {file_path} -> {e}", exc_info=True)
+

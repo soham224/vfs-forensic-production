@@ -11,3 +11,4 @@ services:
       - /home/dev1079/frames/vfs/logs:/app/logs
       - /home/dev1079/frames/vfs/client:/home/dev1079/frames/vfs/client
       - /home/dev1079:/home/dev1079
+      - /home/dev1079/Desktop/vfs_videos:/home/dev1079/Desktop/vfs_videos

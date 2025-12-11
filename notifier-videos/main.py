@@ -1,10 +1,7 @@
 import pyinotify
-from notifier import EventHandler, process_existing_files
-from config import CLIENT_VIDEO_DIR, FOLDER_POLL_INTERVAL
-from logger_config import setup_logger
 import time
-
-logger = setup_logger()
+from notifier import EventHandler, process_existing_files
+from config import CLIENT_VIDEO_DIR, FOLDER_POLL_INTERVAL, logger
 
 
 def main():

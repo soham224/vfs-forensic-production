@@ -56,7 +56,9 @@ def create_user(
         try:
             decrypted = crypto_handler.decrypt_message(lic.license_key)
         except Exception as e:
-            logging.warning(f"Failed to decrypt license id={getattr(lic, 'id', 'unknown')}: {e}")
+            logging.warning(
+                f"Failed to decrypt license id={getattr(lic, 'id', 'unknown')}: {e}"
+            )
             decrypted = "<decrypt_error>"
         logging.info(
             f"License debug -> id={getattr(lic, 'id', 'unknown')}, key_status={lic.key_status}, decrypted_key={decrypted}"

@@ -1,0 +1,475 @@
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:06:34 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:06:34 PM - INFO - config.py:16 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:06:34 PM - INFO - config.py:30 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:06:34 PM - INFO - config.py:31 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:06:34 PM - INFO - config.py:55 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:06:34 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 4.mp4 to /home/dev1079/Desktop/vfs_videos/video 4_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 4.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 6.mp4 to /home/dev1079/Desktop/vfs_videos/video 6_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 6.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 7.mp4 to /home/dev1079/Desktop/vfs_videos/video 7_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 7.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 1.mp4 to /home/dev1079/Desktop/vfs_videos/video 1_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 1.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 3.mp4 to /home/dev1079/Desktop/vfs_videos/video 3_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 3.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 5.mp4 to /home/dev1079/Desktop/vfs_videos/video 5_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 5.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.mp4
+12/11/2025 03:06:34 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 2.mp4 to /home/dev1079/Desktop/vfs_videos/video 2_1.mp4
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:13 - get_db_session() : Failed to get DB session: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - ERROR - my_utils.py:150 - copy_and_log_video() : Failed to register/log video /home/dev1079/frames/vfs/client/video 2.mp4: name 'SessionLocal' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 126, in copy_and_log_video
+    session = get_db_session()
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 11, in get_db_session
+    return SessionLocal()
+NameError: name 'SessionLocal' is not defined
+12/11/2025 03:06:34 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:06:34 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:07:20 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:07:22 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:07:22 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:07:22 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:07:22 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:07:22 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:07:22 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 4.mp4 to /home/dev1079/Desktop/vfs_videos/video 4_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 4_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 6.mp4 to /home/dev1079/Desktop/vfs_videos/video 6_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 6_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 7.mp4 to /home/dev1079/Desktop/vfs_videos/video 7_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 7_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 1.mp4 to /home/dev1079/Desktop/vfs_videos/video 1_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 1_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 3.mp4 to /home/dev1079/Desktop/vfs_videos/video 3_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 3_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 5.mp4 to /home/dev1079/Desktop/vfs_videos/video 5_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 5_2.mp4
+12/11/2025 03:07:22 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 2.mp4 to /home/dev1079/Desktop/vfs_videos/video 2_2.mp4
+12/11/2025 03:07:22 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 2_2.mp4
+12/11/2025 03:07:22 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:07:22 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:07:26 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:08:23 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:08:23 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:08:23 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:08:23 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:08:23 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:08:23 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 4.mp4 to /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 4.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 6.mp4 to /home/dev1079/Desktop/vfs_videos/video 6.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 6.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 7.mp4 to /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 7.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 1.mp4 to /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 1.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 3.mp4 to /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 3.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 5.mp4 to /home/dev1079/Desktop/vfs_videos/video 5.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 5.mp4
+12/11/2025 03:08:23 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:94 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 2.mp4 to /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:08:23 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 2.mp4
+12/11/2025 03:08:23 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:08:23 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:09:05 PM - INFO - notifier.py:23 - _handle_file() : [IN_MOVED_TO] Detected file: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:09:05 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:09:05 PM - INFO - my_utils.py:97 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 1.avi to MP4 format...
+12/11/2025 03:09:30 PM - INFO - my_utils.py:55 - convert_to_mp4() : Successfully converted /home/dev1079/frames/vfs/client/video 1.avi to MP4 format
+12/11/2025 03:09:30 PM - INFO - my_utils.py:147 - copy_and_log_video() : Registered video in DB: video 1_1.mp4
+12/11/2025 03:12:15 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:12:17 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:12:17 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:12:17 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:12:17 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:12:17 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:12:17 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 4.mp4 to /home/dev1079/Desktop/vfs_videos/video 4_1.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 4_1.mp4
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 6.mp4 to /home/dev1079/Desktop/vfs_videos/video 6_1.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 6_1.mp4
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 7.mp4 to /home/dev1079/Desktop/vfs_videos/video 7_1.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 7_1.mp4
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 1.mp4 to /home/dev1079/Desktop/vfs_videos/video 1_2.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 1_2.mp4
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 3.mp4 to /home/dev1079/Desktop/vfs_videos/video 3_1.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 3_1.mp4
+12/11/2025 03:12:17 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:12:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 5.mp4 to /home/dev1079/Desktop/vfs_videos/video 5_1.mp4
+12/11/2025 03:12:18 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 5_1.mp4
+12/11/2025 03:12:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.mp4
+12/11/2025 03:12:18 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 2.mp4 to /home/dev1079/Desktop/vfs_videos/video 2_1.mp4
+12/11/2025 03:12:18 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 2_1.mp4
+12/11/2025 03:12:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:12:18 PM - INFO - my_utils.py:98 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 1.avi to MP4 format...
+12/11/2025 03:12:43 PM - INFO - my_utils.py:55 - convert_to_mp4() : Successfully converted /home/dev1079/frames/vfs/client/video 1.avi to MP4 format
+12/11/2025 03:12:43 PM - INFO - my_utils.py:105 - copy_and_log_video() : Removed original non-MP4 file: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:12:43 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 1_3.mp4
+12/11/2025 03:12:43 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:12:43 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:13:09 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:14:05 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:14:05 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:14:05 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:14:05 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:14:05 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:14:05 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:14:05 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:14:05 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:14:22 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 4.mp4 to /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 4.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 7.mp4 to /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 7.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 3.mp4 to /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:14:22 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 3.mp4
+12/11/2025 03:14:22 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:14:22 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:14:22 PM - INFO - my_utils.py:98 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 2.avi to MP4 format...
+12/11/2025 03:14:50 PM - INFO - my_utils.py:55 - convert_to_mp4() : Successfully converted /home/dev1079/frames/vfs/client/video 2.avi to MP4 format
+12/11/2025 03:14:50 PM - INFO - my_utils.py:105 - copy_and_log_video() : Removed original non-MP4 file: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:14:50 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 2.mp4
+12/11/2025 03:14:50 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:14:50 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:14:50 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 6.mp4 to /home/dev1079/Desktop/vfs_videos/video 6_1.mp4
+12/11/2025 03:14:50 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 6_1.mp4
+12/11/2025 03:14:50 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:14:50 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:14:50 PM - INFO - my_utils.py:95 - copy_and_log_video() : Copied MP4 file /home/dev1079/frames/vfs/client/video 5.mp4 to /home/dev1079/Desktop/vfs_videos/video 5_1.mp4
+12/11/2025 03:14:51 PM - INFO - my_utils.py:157 - copy_and_log_video() : Registered video in DB: video 5_1.mp4
+12/11/2025 03:14:51 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:14:51 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:14:51 PM - INFO - my_utils.py:98 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 1.avi to MP4 format...
+12/11/2025 03:14:59 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:21:12 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:21:12 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:21:12 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:21:12 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:21:12 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:21:12 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:21:12 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:21:12 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:21:23 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:80 - copy_and_log_video() : Copied MP4 from /home/dev1079/frames/vfs/client/video 4.mp4 -> /home/dev1079/Desktop/vfs_videos/video 4_1.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 4_1.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:80 - copy_and_log_video() : Copied MP4 from /home/dev1079/frames/vfs/client/video 7.mp4 -> /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:80 - copy_and_log_video() : Copied MP4 from /home/dev1079/frames/vfs/client/video 3.mp4 -> /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:21:23 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:21:23 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:21:23 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:21:23 PM - INFO - my_utils.py:86 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 2.avi to MP4...
+12/11/2025 03:21:51 PM - INFO - my_utils.py:42 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:21:51 PM - INFO - my_utils.py:95 - copy_and_log_video() : Original file retained as required: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:21:51 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:21:51 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:21:51 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:21:51 PM - INFO - my_utils.py:80 - copy_and_log_video() : Copied MP4 from /home/dev1079/frames/vfs/client/video 6.mp4 -> /home/dev1079/Desktop/vfs_videos/video 6_1.mp4
+12/11/2025 03:21:51 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 6_1.mp4
+12/11/2025 03:21:51 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:21:51 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:21:51 PM - INFO - my_utils.py:80 - copy_and_log_video() : Copied MP4 from /home/dev1079/frames/vfs/client/video 5.mp4 -> /home/dev1079/Desktop/vfs_videos/video 5_1.mp4
+12/11/2025 03:21:51 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 5_1.mp4
+12/11/2025 03:21:51 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:21:51 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:21:51 PM - INFO - my_utils.py:86 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 1.avi to MP4...
+12/11/2025 03:22:17 PM - INFO - my_utils.py:42 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:22:17 PM - INFO - my_utils.py:95 - copy_and_log_video() : Original file retained as required: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:22:17 PM - INFO - my_utils.py:139 - copy_and_log_video() : DB entry created for /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:23:43 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:24:06 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:24:06 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:24:06 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:24:06 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:24:06 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:24:06 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:24:06 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:24:06 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:24:17 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:79 - copy_and_log_video() : Copied MP4 -> /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:128 - copy_and_log_video() : DB entry created: /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:79 - copy_and_log_video() : Copied MP4 -> /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:128 - copy_and_log_video() : DB entry created: /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:79 - copy_and_log_video() : Copied MP4 -> /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:24:17 PM - INFO - my_utils.py:128 - copy_and_log_video() : DB entry created: /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:24:17 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:24:17 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:24:17 PM - INFO - my_utils.py:85 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 2.avi to MP4...
+12/11/2025 03:24:46 PM - INFO - my_utils.py:42 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:24:46 PM - INFO - my_utils.py:92 - copy_and_log_video() : Converted and saved -> /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:24:46 PM - INFO - my_utils.py:128 - copy_and_log_video() : DB entry created: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:24:46 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:24:46 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:24:46 PM - INFO - my_utils.py:70 - copy_and_log_video() : File already processed: /home/dev1079/Desktop/vfs_videos/video 6.mp4
+12/11/2025 03:24:46 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:24:46 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:24:46 PM - INFO - my_utils.py:70 - copy_and_log_video() : File already processed: /home/dev1079/Desktop/vfs_videos/video 5.mp4
+12/11/2025 03:24:46 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:24:46 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:24:46 PM - INFO - my_utils.py:85 - copy_and_log_video() : Converting /home/dev1079/frames/vfs/client/video 1.avi to MP4...
+12/11/2025 03:25:14 PM - INFO - my_utils.py:42 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:25:14 PM - INFO - my_utils.py:92 - copy_and_log_video() : Converted and saved -> /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:25:14 PM - INFO - my_utils.py:128 - copy_and_log_video() : DB entry created: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:28:30 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:28:32 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:28:32 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:28:32 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:28:32 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:28:32 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:28:32 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 6.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 5.mp4
+12/11/2025 03:28:32 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:28:32 PM - INFO - my_utils.py:70 - copy_and_log_video() : MP4 already exists, skipping: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:28:32 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:28:32 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:28:37 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:28:58 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:28:58 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:28:58 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:28:58 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:28:58 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:28:58 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:28:58 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:28:58 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:29:09 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:29:09 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:29:09 PM - ERROR - my_utils.py:126 - copy_and_log_video() : Error in copy_and_log_video: /home/dev1079/frames/vfs/client/video 4.mp4 -> name 'shutil' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 77, in copy_and_log_video
+    shutil.copy2(file_path, destination_path)
+NameError: name 'shutil' is not defined
+12/11/2025 03:29:09 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:29:09 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:29:09 PM - ERROR - my_utils.py:126 - copy_and_log_video() : Error in copy_and_log_video: /home/dev1079/frames/vfs/client/video 7.mp4 -> name 'shutil' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 77, in copy_and_log_video
+    shutil.copy2(file_path, destination_path)
+NameError: name 'shutil' is not defined
+12/11/2025 03:29:09 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:29:09 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:29:09 PM - ERROR - my_utils.py:126 - copy_and_log_video() : Error in copy_and_log_video: /home/dev1079/frames/vfs/client/video 3.mp4 -> name 'shutil' is not defined
+Traceback (most recent call last):
+  File "/home/dev1079/Shruti_Workspace/VFS/New_git/vfs-forensic-production/notifier-videos/my_utils.py", line 77, in copy_and_log_video
+    shutil.copy2(file_path, destination_path)
+NameError: name 'shutil' is not defined
+12/11/2025 03:29:09 PM - INFO - notifier.py:23 - _handle_file() : [IN_CLOSE_WRITE] Detected file: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:29:09 PM - INFO - notifier.py:25 - _handle_file() : Registering video in DB (no copy): /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:29:09 PM - INFO - my_utils.py:84 - copy_and_log_video() : Converting non-MP4: /home/dev1079/frames/vfs/client/video 2.avi -> /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:29:32 PM - INFO - main.py:30 - main() : Shutting down notifier.
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:81 - setup_logger() : Logger setup started.
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:82 - setup_logger() : LOG_BASE_DIRECTORY is set to: ./
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:83 - setup_logger() : Log files will be stored in: ./logs
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:84 - setup_logger() : Current log file name: 11-12-2025_vfs_tusker_notifier_videos.log
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:85 - setup_logger() : Log format: timestamp | level | file:line | function | message
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:86 - setup_logger() : File handler and console handler attached to logger.
+12/11/2025 03:29:49 PM - DEBUG - logger_config.py:87 - setup_logger() : Logger initialization complete.
+12/11/2025 03:29:49 PM - INFO - config.py:19 - <module>() : Using DB: root@localhost:3306/vfs-try-2
+12/11/2025 03:29:49 PM - INFO - config.py:53 - <module>() : Client video directory: /home/dev1079/frames/vfs/client
+12/11/2025 03:29:49 PM - INFO - config.py:54 - <module>() : Internal video directory: /home/dev1079/Desktop/vfs_videos
+12/11/2025 03:29:49 PM - INFO - config.py:78 - <module>() : Using NGINX_URL_PREFIX: http://192.168.11.97/Desktop/vfs_videos
+12/11/2025 03:29:49 PM - INFO - main.py:9 - main() : Starting Video Notifier (no-copy mode): registering files directly to DB
+12/11/2025 03:29:49 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 2.avi
+12/11/2025 03:29:49 PM - INFO - my_utils.py:87 - copy_and_log_video() : Converting non-MP4: /home/dev1079/frames/vfs/client/video 2.avi -> /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:45 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:93 - copy_and_log_video() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 2.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 4.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:81 - copy_and_log_video() : Copied MP4 to storage: /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 4.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 6.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:81 - copy_and_log_video() : Copied MP4 to storage: /home/dev1079/Desktop/vfs_videos/video 6.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 6.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 7.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:81 - copy_and_log_video() : Copied MP4 to storage: /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 7.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 3.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:81 - copy_and_log_video() : Copied MP4 to storage: /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 3.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 5.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:81 - copy_and_log_video() : Copied MP4 to storage: /home/dev1079/Desktop/vfs_videos/video 5.mp4
+12/11/2025 03:30:18 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 5.mp4
+12/11/2025 03:30:18 PM - INFO - notifier.py:42 - process_existing_files() : Found pre-existing video: /home/dev1079/frames/vfs/client/video 1.avi
+12/11/2025 03:30:18 PM - INFO - my_utils.py:87 - copy_and_log_video() : Converting non-MP4: /home/dev1079/frames/vfs/client/video 1.avi -> /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:30:45 PM - INFO - my_utils.py:45 - convert_to_mp4() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:30:45 PM - INFO - my_utils.py:93 - copy_and_log_video() : Converted to MP4: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:30:45 PM - INFO - my_utils.py:126 - copy_and_log_video() : DB entry created for MP4: /home/dev1079/Desktop/vfs_videos/video 1.mp4
+12/11/2025 03:30:45 PM - INFO - main.py:13 - main() : Using pyinotify mask: IN_CLOSE_WRITE | IN_MOVED_TO
+12/11/2025 03:30:45 PM - INFO - main.py:19 - main() : Watching folder: /home/dev1079/frames/vfs/client
+12/11/2025 03:31:12 PM - INFO - main.py:30 - main() : Shutting down notifier.

@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
@@ -5,6 +6,7 @@ from starlette.middleware.cors import CORSMiddleware
 from api.api_v1.api import api_router
 from applogging.applogger import read_logging_config, setup_logging
 from core.config import settings
+from core.db_init_utils import initialize_database
 from db import init_db
 
 app = FastAPI(
@@ -25,20 +27,20 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 log_config_dict = read_logging_config("log_config.yml")
 setup_logging(log_config_dict)
 
+# Try to initialize database with data from dump file if tables are empty
+try:
+    initialize_database()
+except Exception as e:
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Database initialization skipped due to: {str(e)}")
+    logger.info("API will continue to start without database initialization.")
+
 # if "prod" in os.getenv("MYSQL_DB_NAME"):
 #     custom_schedule()
 
 add_pagination(app)
 
-# Run the File
-#
-
 import uvicorn
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",  # "filename:app_instance"
-        host="0.0.0.0",  # Or "127.0.0.1" for localhost only
-        port=8004,  # Port number
-        reload=True,  # Auto-reload on code changes (for development)
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8004, reload=False)
