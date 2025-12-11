@@ -82,7 +82,7 @@ function VfsWizardModal({
         if (caseModalShow) {
             dispatch(action.fetchLocation());
         }
-    }, [dispatch ,caseModalShow]);
+    }, [dispatch, caseModalShow]);
 
 
     // Get locations from the Redux state
@@ -119,6 +119,10 @@ function VfsWizardModal({
             setSuspects([{image: null, name: ''}]);
             setActiveStep(0);
             setErrors({});
+
+            setSelectedVideos([]);    // reset videos
+            setVideoAll([]);          // reset video list
+            setSelectedCameras([]);   // reset cameras
         }
     }, [caseModalShow]);
 
@@ -152,8 +156,13 @@ function VfsWizardModal({
 
 
     const addSuspect = () => {
-        if (suspects.length < 4) setSuspects([...suspects, {image: null, name: ''}]);
+        if (suspects.length >= 2) {
+            alert("You can upload a maximum of 2 suspects.");
+            return;
+        }
+        setSuspects([...suspects, {image: null, name: ''}]);
     };
+
 
     const removeSuspect = (index) => {
         if (suspects.length > 1) setSuspects(suspects.filter((_, i) => i !== index));
@@ -301,458 +310,509 @@ function VfsWizardModal({
 
     const steps = ['Basic Information', "Select Video Type", 'Select Video', 'Upload Suspect'];
     return (
-        <Modal size="xl" centered show={caseModalShow} onHide={caseModalOnClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>New Case</Modal.Title>
-            </Modal.Header>
+        <>
+            <Modal size="xl" centered show={caseModalShow} onHide={caseModalOnClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>New Case</Modal.Title>
+                </Modal.Header>
 
-            <Modal.Body style={{display: 'flex', height: '70vh'}}>
-                {/* Left Static Stepper */}
-                <div style={{
-                    width: '15%',
+                <Modal.Body style={{display: 'flex', height: '70vh'}}>
+                    {/* Left Static Stepper */}
+                    <div style={{
+                        width: '15%',
 
-                    borderRight: '1px solid #ddd',
-                    position: 'sticky',
-                    top: 0,
-                }}>
-                    <CustomStepper activeStep={activeStep} orientation="vertical" style={{padding: "0px"}}>
+                        borderRight: '1px solid #ddd',
+                        position: 'sticky',
+                        top: 0,
+                    }}>
+                        <CustomStepper activeStep={activeStep} orientation="vertical" style={{padding: "0px"}}>
 
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        ))}
-                    </CustomStepper>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </CustomStepper>
 
-                </div>
+                    </div>
 
-                {/* Right Scrollable Content */}
-                <div style={{
-                    width: '85%',
-                    paddingLeft: '20px',
-                    overflowX: 'hidden',
-                    overflowY: 'hidden'
-                }}>
-                    {activeStep === 0 && (
-                        <Form>
-                            <Row>
-                                <Col sm={12}>
-                                    <Form.Label>Case Name</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={caseData.caseName}
-                                        onChange={(e) => setCaseData({...caseData, caseName: e.target.value})}
-                                    />
-                                </Col>
-                                <Col sm={12} className="mt-3">
-                                    <Form.Label>Case Description</Form.Label>
-                                    <Form.Control
-                                        as="textarea"
-                                        rows={6}
-                                        name="caseDescription"
-                                        value={caseData.caseDescription}
-                                        onChange={(e) => setCaseData({...caseData, caseDescription: e.target.value})}
-                                    />
-                                </Col>
-
-                            </Row>
-                        </Form>
-                    )}
-
-                    {activeStep === 1 &&
-                        <>
-                            <Row className={'mb-5'}>
-                                <Col sm={6} className="mt-3">
-                                    <FormControl>
-                                        <Form.Label id="demo-radio-buttons-group-label">Select Video Type</Form.Label>
-                                        <RadioGroup
-                                            aria-labelledby="demo-radio-buttons-group-label"
-                                            name="radio-buttons-group"
-                                            value={selectedVideoTypeValue}
-                                            onChange={handleChangeVideoType} // Handle state update
-                                        >
-                                            <FormControlLabel value="video" control={<Radio/>} label="Video"/>
-                                            {/*<FormControlLabel value="vms" control={<Radio/>} label="VMS"/>*/}
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Col>
-                            </Row>
-                        </>
-                    }
-
-                    {activeStep === 2 &&
-                        <>
-                            {selectedVideoTypeValue !== "video" ? (
-                                <>
-                                    <Row className={'mb-5'}>
-                                        <Col sm={6} className="mt-3">
-                                            <Form.Label>Select Location</Form.Label>
-                                            <Select
-                                                theme={(theme) => ({
-                                                    ...theme,
-                                                    borderRadius: 0,
-                                                    cursor: "pointer",
-                                                    colors: {
-                                                        ...theme.colors,
-                                                        primary25: "#5DBFC4",
-                                                        primary: "#147b82",
-                                                    },
-                                                })}
-                                                isMulti={true}
-                                                placeholder="Select Location"
-                                                value={locationValue} // This should be the entire selected object
-                                                isLoading={locationLoader}
-                                                onChange={handleLocationChange}
-                                                options={locationOptions}
-                                                styles={customStyles}
-                                            />
-                                        </Col>
-
-
-                                        <Col sm={6} className="mt-3">
-                                            <Form.Label>Select Date</Form.Label>
-                                            <FormDateRangePicker
-                                                rangeIndex={selectedIndex}
-                                                minDate={minDate}
-                                                maxDate={maxDate}
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                                changeDateTimeRange={dateTimeRangeChangeHandler}
-                                                changeDateTimeRangeIndex={dateTimeRangeIndexChangeHandler}
-                                            />{errors.dateRange &&
-                                            <small style={{color: 'red'}}>{errors.dateRange}</small>}
-                                        </Col>
-                                        <Col sm={12} className="mt-3">
-                                            <Button
-                                                variant="primary"
-                                                onClick={() => showCamera()}
-                                                className={'float-right btn-sm'}
-                                            >
-                                                Show Camera
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                    <hr/>
-                                    <Row>
-                                        {cameraNameByLocationID.length > 0 &&
-                                            <Col sm={12} className={'d-flex justify-content-between'}>
-                                                <Form.Check
-                                                    type="checkbox"
-                                                    checked={selectedCameras.length === filteredCameras.length}
-                                                    onChange={(e) => handleSelectAll(e.target.checked)}
-                                                    label={'Select All'}
-                                                />
-                                                <div className="d-flex">
-                                                    <input
-                                                        type="search"
-                                                        className="form-control form-control-sm"
-                                                        name="searchText"
-                                                        placeholder="Search For Name"
-                                                        value={searchText}
-                                                        onChange={handleSearchChange}
-                                                    />
-                                                    {/*<Button*/}
-                                                    {/*    variant="primary"*/}
-                                                    {/*    // onClick={() => removeSuspect()}*/}
-                                                    {/*    className={'float-right btn-sm ml-3'}*/}
-                                                    {/*>*/}
-                                                    {/*    Add Camera*/}
-                                                    {/*</Button>*/}
-                                                </div>
-                                            </Col>
-                                        }
-                                    </Row>
-
-                                    <div
-                                        style={{
-                                            maxHeight: 'calc(70vh - 100px)', // Adjust height dynamically for header and footer
-                                            overflowY: 'auto',
-                                            paddingBottom: '10px',
-                                        }}
-                                    >
-
-                                        <CameraCardView
-                                            selectedCameras={selectedCameras}
-                                            setSelectedCameras={setSelectedCameras}
-                                            cameraNameByLocationID={cameraNameByLocationID}
-                                            searchText={searchText}
+                    {/* Right Scrollable Content */}
+                    <div style={{
+                        width: '85%',
+                        paddingLeft: '20px',
+                        overflowX: 'hidden',
+                        overflowY: 'hidden'
+                    }}>
+                        {activeStep === 0 && (
+                            <Form>
+                                <Row>
+                                    <Col sm={12}>
+                                        <Form.Label>Case Name</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            value={caseData.caseName}
+                                            onChange={(e) => setCaseData({...caseData, caseName: e.target.value})}
                                         />
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div>
+                                    </Col>
+                                    <Col sm={12} className="mt-3">
+                                        <Form.Label>Case Description</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            rows={6}
+                                            name="caseDescription"
+                                            value={caseData.caseDescription}
+                                            onChange={(e) => setCaseData({
+                                                ...caseData,
+                                                caseDescription: e.target.value
+                                            })}
+                                        />
+                                    </Col>
 
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                                            <Button onClick={handleLocalVideo} variant="primary">
-                                                Show All Video
-                                            </Button>
-                                        </div>
+                                </Row>
+                            </Form>
+                        )}
+
+                        {activeStep === 1 &&
+                            <>
+                                <Row className={'mb-5'}>
+                                    <Col sm={6} className="mt-3">
+                                        <FormControl>
+                                            <Form.Label id="demo-radio-buttons-group-label">Select Video
+                                                Type</Form.Label>
+                                            <RadioGroup
+                                                aria-labelledby="demo-radio-buttons-group-label"
+                                                name="radio-buttons-group"
+                                                value={selectedVideoTypeValue}
+                                                onChange={handleChangeVideoType} // Handle state update
+                                            >
+                                                <FormControlLabel value="video" control={<Radio
+                                                    sx={{
+                                                        color: "#147b82",
+                                                        '&.Mui-checked': {
+                                                            color: "#147b82",
+                                                        },
+                                                    }}
+                                                />} label="Video"/>
+                                                {/*<FormControlLabel value="vms" control={<Radio/>} label="VMS"/>*/}
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Col>
+                                </Row>
+                            </>
+                        }
+
+                        {activeStep === 2 &&
+                            <>
+                                {selectedVideoTypeValue !== "video" ? (
+                                    <>
+                                        <Row className={'mb-5'}>
+                                            <Col sm={6} className="mt-3">
+                                                <Form.Label>Select Location</Form.Label>
+                                                <Select
+                                                    theme={(theme) => ({
+                                                        ...theme,
+                                                        borderRadius: 0,
+                                                        cursor: "pointer",
+                                                        colors: {
+                                                            ...theme.colors,
+                                                            primary25: "#5DBFC4",
+                                                            primary: "#147b82",
+                                                        },
+                                                    })}
+                                                    isMulti={true}
+                                                    placeholder="Select Location"
+                                                    value={locationValue} // This should be the entire selected object
+                                                    isLoading={locationLoader}
+                                                    onChange={handleLocationChange}
+                                                    options={locationOptions}
+                                                    styles={customStyles}
+                                                />
+                                            </Col>
+
+
+                                            <Col sm={6} className="mt-3">
+                                                <Form.Label>Select Date</Form.Label>
+                                                <FormDateRangePicker
+                                                    rangeIndex={selectedIndex}
+                                                    minDate={minDate}
+                                                    maxDate={maxDate}
+                                                    startDate={startDate}
+                                                    endDate={endDate}
+                                                    changeDateTimeRange={dateTimeRangeChangeHandler}
+                                                    changeDateTimeRangeIndex={dateTimeRangeIndexChangeHandler}
+                                                />{errors.dateRange &&
+                                                <small style={{color: 'red'}}>{errors.dateRange}</small>}
+                                            </Col>
+                                            <Col sm={12} className="mt-3">
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={() => showCamera()}
+                                                    className={'float-right btn-sm'}
+                                                >
+                                                    Show Camera
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        <hr/>
+                                        <Row>
+                                            {cameraNameByLocationID.length > 0 &&
+                                                <Col sm={12} className={'d-flex justify-content-between'}>
+                                                    <Form.Check
+                                                        type="checkbox"
+                                                        checked={selectedCameras.length === filteredCameras.length}
+                                                        onChange={(e) => handleSelectAll(e.target.checked)}
+                                                        label={'Select All'}
+                                                    />
+                                                    <div className="d-flex">
+                                                        <input
+                                                            type="search"
+                                                            className="form-control form-control-sm"
+                                                            name="searchText"
+                                                            placeholder="Search For Name"
+                                                            value={searchText}
+                                                            onChange={handleSearchChange}
+                                                        />
+                                                        {/*<Button*/}
+                                                        {/*    variant="primary"*/}
+                                                        {/*    // onClick={() => removeSuspect()}*/}
+                                                        {/*    className={'float-right btn-sm ml-3'}*/}
+                                                        {/*>*/}
+                                                        {/*    Add Camera*/}
+                                                        {/*</Button>*/}
+                                                    </div>
+                                                </Col>
+                                            }
+                                        </Row>
 
                                         <div
                                             style={{
-                                                // maxHeight: 'calc(70vh - 0px)', // Adjust height dynamically for header and footer
-                                                overflowY: 'visible',
+                                                maxHeight: 'calc(70vh - 100px)', // Adjust height dynamically for header and footer
+                                                overflowY: 'auto',
                                                 paddingBottom: '10px',
                                             }}
                                         >
-                                            <div>
 
-                                                <Row className="g-4">
-
-                                                    {videoAll.map((camera) => (
-                                                        <Col key={camera.id}
-                                                             xs={12}   // 1 per row on mobile
-                                                             sm={12}    // 2 per row on small screens
-                                                             md={6}    // 3 per row on medium screens
-                                                             lg={4}    // 4 per row on large screens
-                                                             xl={3}    // 4 per row on extra-large screens
-                                                             xxl={3}   // 4 per row on wide desktops
-                                                             className={'mt-3'}>
-                                                            <Card style={{boxShadow: '2px 2px 5px 0px #835d5d'}}>
-                                                                <div
-                                                                    className="d-flex justify-content-between align-items-center mx-2 mt-2">
-                                                                    <div className={'lead'}>
-                                                                        {camera?.video_name}
-                                                                    </div>
-                                                                    <Form.Check
-                                                                        type="checkbox"
-                                                                        id={`camera-check-${camera?.id}`}
-                                                                        checked={selectedVideos.includes(camera?.id)}
-                                                                        onChange={(e) => {
-                                                                            if (e.target.checked) {
-                                                                                setSelectedVideos([...selectedVideos, camera?.id]);
-                                                                            } else {
-                                                                                setSelectedVideos(selectedVideos.filter(id => id !== camera?.id));
-                                                                            }
-                                                                        }}
-                                                                        aria-label={`Select camera ${camera?.video_name}`}
-                                                                    />
-                                                                </div>
-
-                                                                <iframe
-                                                                    style={{borderRadius: '5px'}}
-                                                                    width="100%"
-                                                                    height="200"
-                                                                    src={camera?.destination_url}
-                                                                    frameBorder="0"
-                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowFullScreen
-                                                                    title={camera?.video_name}
-                                                                    className={'mt-2'}
-                                                                ></iframe>
-                                                            </Card>
-                                                        </Col>
-                                                    ))}
-                                                </Row>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </>
-
-                            )}
-
-
-                        </>
-                    }
-
-                    {activeStep === 3 && (
-                        <>
-
-                            <div
-                                style={{
-                                    maxHeight: 'calc(70vh - 100px)', // Adjust height dynamically for header and footer
-                                    overflowY: 'auto',
-                                    paddingBottom: '10px',
-                                }}
-                            >
-                                {suspects.map((suspect, index) => (
-                                    <div
-                                        key={index}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'flex-start',
-                                            alignItems: 'center',
-                                            flexDirection: 'row',
-                                            marginBottom: '20px',
-                                        }}
-                                    >
-                                        {/* Left side: Image Upload */}
-                                        <div style={{position: 'relative', marginRight: '20px'}}>
-                                            {suspect.image ? (
-                                                <div
-                                                    style={{
-                                                        width: '180px',
-                                                        height: '180px',
-                                                        overflow: 'hidden',
-                                                        marginBottom: '10px',
-                                                        borderRadius: "10px"
-                                                    }}
-                                                >
-                                                    <img
-                                                        src={suspect.image}
-                                                        alt="Profile"
-                                                        style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div
-                                                    style={{
-                                                        width: '180px',
-                                                        height: '180px',
-                                                        backgroundColor: '#e0e0e0',
-                                                        marginBottom: '10px',
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        color: '#fff',
-                                                        fontSize: '16px',
-                                                        borderRadius: "10px"
-                                                    }}
-                                                >
-                                                    Upload Photo
-                                                </div>
-                                            )}
-
-                                            {/* Remove Icon */}
-                                            {suspect.image && (
-                                                <FaTimesCircle
-                                                    size={24}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: '5px',
-                                                        right: '5px',
-                                                        backgroundColor: 'white',
-                                                        color: 'red',
-                                                        borderRadius: '50%',
-                                                        padding: '5px',
-                                                        cursor: 'pointer',
-                                                    }}
-                                                    onClick={() => handleRemoveImage(index)}
-                                                />
-                                            )}
-                                            {!suspect.image && (
-                                                <label
-                                                    htmlFor={`file-upload-${index}`}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: '5px',
-                                                        right: '5px',
-                                                        backgroundColor: '#147b82',
-                                                        color: 'white',
-                                                        borderRadius: '50%',
-                                                        padding: '5px',
-                                                        cursor: 'pointer',
-                                                    }}
-                                                >
-                                                    <FaPen/>
-                                                </label>
-                                            )}
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                id={`file-upload-${index}`}
-                                                style={{display: 'none'}}
-                                                onChange={(e) => handleFileUpload(e, index)}
+                                            <CameraCardView
+                                                selectedCameras={selectedCameras}
+                                                setSelectedCameras={setSelectedCameras}
+                                                cameraNameByLocationID={cameraNameByLocationID}
+                                                searchText={searchText}
                                             />
                                         </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div>
 
-                                        {/* Right side: Name Input */}
-                                        <Col md={6}>
-                                            <Form.Group as={Row}>
-                                                <Col sm={12}>
-                                                    <Form.Label>Suspect Name</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        value={suspect.name}
-                                                        placeholder="Enter Suspect Name"
-                                                        onChange={(e) => handleChange(e, index)}
-                                                    />
-                                                </Col>
-                                            </Form.Group>
-                                        </Col>
-                                        <Button
-                                            variant="danger"
-                                            onClick={() => removeSuspect(index)}
-                                            disabled={suspects.length === 1}
-                                        >
-                                            <AiOutlineClose/> Remove
-                                        </Button>
-                                    </div>
-                                ))}
-                                {suspects.length < 4 && (
-                                    <Button onClick={addSuspect} variant="primary">
-                                        <FaPlus/> Add Suspect
-                                    </Button>
+                                            <div style={{
+                                                display: 'flex',
+                                                justifyContent: 'flex-end',
+                                                marginBottom: '10px'
+                                            }}>
+                                                <Button onClick={handleLocalVideo} variant="primary">
+                                                    Show All Video
+                                                </Button>
+                                            </div>
+
+                                            <div
+                                                style={{
+                                                    maxHeight: "60vh",
+                                                    overflowY: "auto",
+                                                    paddingRight: "8px",
+                                                    overflowX: "hidden",
+                                                }}
+                                            >
+                                                <div>
+
+                                                    <Row className="g-4">
+
+                                                        {videoAll.map((camera) => (
+                                                            <Col key={camera.id}
+                                                                 xs={12}   // 1 per row on mobile
+                                                                 sm={12}    // 2 per row on small screens
+                                                                 md={6}    // 3 per row on medium screens
+                                                                 lg={4}    // 4 per row on large screens
+                                                                 xl={3}    // 4 per row on extra-large screens
+                                                                 xxl={3}   // 4 per row on wide desktops
+                                                                 className={'mt-3'}>
+                                                                <Card style={{
+                                                                    boxShadow: '2px 2px 5px rgba(0,0,0,0.2)',
+                                                                    borderRadius: '10px'
+                                                                }}>
+
+                                                                    {/* Video name inside card */}
+                                                                    <div
+                                                                        style={{
+                                                                            padding: "8px 10px",
+                                                                            fontSize: "14px",
+                                                                            fontWeight: "600",
+                                                                            whiteSpace: "nowrap",
+                                                                            overflow: "hidden",
+                                                                            textOverflow: "ellipsis",
+                                                                            maxWidth: "100%",
+                                                                            display: "block",
+                                                                            cursor: "pointer"
+                                                                        }}
+                                                                        title={camera?.video_name}  // tooltip full name
+                                                                    >
+                                                                        {camera?.video_name}
+                                                                    </div>
+
+                                                                    {/* Video Preview */}
+                                                                    <iframe
+                                                                        style={{
+                                                                            width: '100%',
+                                                                            height: '180px',
+                                                                            borderRadius: '0 0 10px 10px'
+                                                                        }}
+                                                                        src={camera?.destination_url}
+                                                                        frameBorder="0"
+                                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowFullScreen
+                                                                        title={camera?.video_name}
+                                                                    ></iframe>
+
+                                                                    {/* Checkbox inside card bottom-right */}
+                                                                    <div style={{
+                                                                        display: 'flex',
+                                                                        justifyContent: 'flex-end',
+                                                                        padding: '5px 10px'
+                                                                    }}>
+                                                                        <Form.Check
+                                                                            type="checkbox"
+                                                                            id={`camera-check-${camera?.id}`}
+                                                                            checked={selectedVideos.includes(camera?.id)}
+                                                                            onChange={(e) => {
+                                                                                const isChecked = e.target.checked;
+
+                                                                                if (isChecked && selectedVideos.length >= 16) {
+                                                                                    alert("You can select a maximum of 16 videos.");
+                                                                                    return;
+                                                                                }
+
+                                                                                if (isChecked) {
+                                                                                    setSelectedVideos([...selectedVideos, camera?.id]);
+                                                                                } else {
+
+                                                                                    setSelectedVideos(selectedVideos.filter(id => id !== camera?.id));
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                </Card>
+
+                                                            </Col>
+                                                        ))}
+                                                    </Row>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </>
+
                                 )}
+
+
+                            </>
+                        }
+
+                        {activeStep === 3 && (
+                            <>
+
+                                <div
+                                    style={{
+                                        maxHeight: 'calc(70vh - 100px)', // Adjust height dynamically for header and footer
+                                        overflowY: 'auto',
+                                        paddingBottom: '10px',
+                                    }}
+                                >
+                                    {suspects.map((suspect, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                                alignItems: 'center',
+                                                flexDirection: 'row',
+                                                marginBottom: '20px',
+                                            }}
+                                        >
+                                            {/* Left side: Image Upload */}
+                                            <div style={{position: 'relative', marginRight: '20px'}}>
+                                                {suspect.image ? (
+                                                    <div
+                                                        style={{
+                                                            width: '180px',
+                                                            height: '180px',
+                                                            overflow: 'hidden',
+                                                            marginBottom: '10px',
+                                                            borderRadius: "10px"
+                                                        }}
+                                                    >
+                                                        <img
+                                                            src={suspect.image}
+                                                            alt="Profile"
+                                                            style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        style={{
+                                                            width: '180px',
+                                                            height: '180px',
+                                                            backgroundColor: '#e0e0e0',
+                                                            marginBottom: '10px',
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            color: '#fff',
+                                                            fontSize: '16px',
+                                                            borderRadius: "10px"
+                                                        }}
+                                                    >
+                                                        Upload Photo
+                                                    </div>
+                                                )}
+
+                                                {/* Remove Icon */}
+                                                {suspect.image && (
+                                                    <FaTimesCircle
+                                                        size={24}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '5px',
+                                                            right: '5px',
+                                                            backgroundColor: 'white',
+                                                            color: 'red',
+                                                            borderRadius: '50%',
+                                                            padding: '5px',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                        onClick={() => handleRemoveImage(index)}
+                                                    />
+                                                )}
+                                                {!suspect.image && (
+                                                    <label
+                                                        htmlFor={`file-upload-${index}`}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '5px',
+                                                            right: '5px',
+                                                            backgroundColor: '#147b82',
+                                                            color: 'white',
+                                                            borderRadius: '50%',
+                                                            padding: '5px',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        <FaPen/>
+                                                    </label>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    id={`file-upload-${index}`}
+                                                    style={{display: 'none'}}
+                                                    onChange={(e) => handleFileUpload(e, index)}
+                                                />
+                                            </div>
+
+                                            {/* Right side: Name Input */}
+                                            <Col md={6}>
+                                                <Form.Group as={Row}>
+                                                    <Col sm={12}>
+                                                        <Form.Label>Suspect Name</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={suspect.name}
+                                                            placeholder="Enter Suspect Name"
+                                                            onChange={(e) => handleChange(e, index)}
+                                                        />
+                                                    </Col>
+                                                </Form.Group>
+                                            </Col>
+                                            <Button
+                                                variant="danger"
+                                                onClick={() => removeSuspect(index)}
+                                                disabled={suspects.length === 1}
+                                            >
+                                                <AiOutlineClose/> Remove
+                                            </Button>
+                                        </div>
+                                    ))}
+                                    {suspects.length < 2 && (
+                                        <Button onClick={addSuspect} variant="primary">
+                                            <FaPlus/> Add Suspect
+                                        </Button>
+                                    )}
+                                </div>
+
+                                {/* Fixed Note Section */}
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        // backgroundColor: '#fff3cd',
+                                        borderLeft: '5px solid #ffeeba',
+                                        padding: '15px',
+                                        fontSize: '14px',
+                                        // color: '#856404',
+                                        borderRadius: '4px',
+                                        marginTop: '10px',
+                                    }}
+                                >
+                                    <strong>Note:</strong> Uploading duplicate entries for a person or suspect may lead
+                                    to
+                                    delayed processing and
+                                    inaccurate results. Please ensure each entry is unique.
+                                </div>
+
+
+                            </>
+                        )}
+
+                    </div>
+                </Modal.Body>
+
+
+                <Modal.Footer style={{justifyContent: 'space-between'}}>
+                    {activeStep < steps.length - 1 ? (
+                        <>
+                            <div>
+                                <Button onClick={handleBack} disabled={activeStep === 0} variant="secondary">
+                                    Previous
+                                </Button>
                             </div>
+                            <div>
 
-                            {/* Fixed Note Section */}
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    // backgroundColor: '#fff3cd',
-                                    borderLeft: '5px solid #ffeeba',
-                                    padding: '15px',
-                                    fontSize: '14px',
-                                    // color: '#856404',
-                                    borderRadius: '4px',
-                                    marginTop: '10px',
-                                }}
-                            >
-                                <strong>Note:</strong> Uploading duplicate entries for a person or suspect may lead to
-                                delayed processing and
-                                inaccurate results. Please ensure each entry is unique.
+                                <Button onClick={handleNext} variant="primary" disabled={
+                                    // eslint-disable-next-line no-mixed-operators
+                                    activeStep === 0 && !isStepOneValid() ||
+                                    // eslint-disable-next-line no-mixed-operators
+                                    activeStep === 2 && !isStepTwoValid()}>
+                                    Next
+                                </Button>
                             </div>
-
-
                         </>
+                    ) : (
+                        <>
+                            <div>
+                                <Button onClick={handleBack} disabled={activeStep === 0} variant="secondary">
+                                    Previous
+                                </Button>
+                            </div>
+                            <div>
+                                <Button onClick={caseModalClose} variant="primary" disabled={!isSuspectsValid()}>
+                                    Submit
+                                </Button>
+                            </div>
+                        </>
+
                     )}
-
-                </div>
-            </Modal.Body>
-
-
-            <Modal.Footer style={{justifyContent: 'space-between'}}>
-                {activeStep < steps.length - 1 ? (
-                    <>
-                        <div>
-                            <Button onClick={handleBack} disabled={activeStep === 0} variant="secondary">
-                                Previous
-                            </Button>
-                        </div>
-                        <div>
-
-                            <Button onClick={handleNext} variant="primary" disabled={
-                                // eslint-disable-next-line no-mixed-operators
-                                activeStep === 0 && !isStepOneValid() ||
-                                // eslint-disable-next-line no-mixed-operators
-                                activeStep === 2 && !isStepTwoValid()}>
-                                Next
-                            </Button>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <div>
-                            <Button onClick={handleBack} disabled={activeStep === 0} variant="secondary">
-                                Previous
-                            </Button>
-                        </div>
-                        <div>
-                            <Button onClick={caseModalClose} variant="primary" disabled={!isSuspectsValid()}>
-                                Submit
-                            </Button>
-                        </div>
-                    </>
-
-                )}
-            </Modal.Footer>
-        </Modal>
+                </Modal.Footer>
+            </Modal>
+        </>
     );
 }
 
 export default VfsWizardModal;
-
