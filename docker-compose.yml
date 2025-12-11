@@ -20,8 +20,8 @@ services:
       - "9000:80"   # BACKEND OPEN ON LOCALHOST:8000
     volumes:
       - backend-application-logs:/logs
-      - /home/dev1079/frames/vfs/videos:/home/dev1079/frames/vfs/videos
-      - /home/dev1079/frames/vfs/suspect_images:/home/dev1079/frames/vfs/suspect_images
+      - /home/dev56/Soham/frames/vfs/videos:/home/dev56/Soham/frames/vfs/videos
+      - /home/dev56/Soham/suspect_images:/home/dev56/Soham/suspect_images
     environment:
       MYSQL_HOSTNAME: mysql
       MYSQL_USERNAME: root
@@ -29,10 +29,24 @@ services:
       MYSQL_PORT: 3306
       MYSQL_DB_NAME: vfs_auto_serving
       PROJECT_ENV: development
+
+      ROI_API_ENDPOINT: development
+      USER_ID_CV2: '[1]'
+
       MYSQL_POOL_SIZE: 20    # <-- REQUIRED
       MYSQL_MAX_OVERFLOW: 30  
       MYSQL_POOL_TIMEOUT: 60
       MYSQL_POOL_PRE_PING: "True"
+
+      BASE_DIR: /home/dev56/Soham/suspect_images
+      CHECK_RTSP_DATA: ./client_data/check_rtsp_data
+      LICENSE_SECRET_KEY: secret_key
+      TOTAL_CHAIRS_COUNT: '{"1":10, "2":10, "3":10}'
+
+      LOCAL_VIDEOS_PATH: /home/dev56/Soham/frames/vfs/videos
+      LOCAL_NGINX_PATH: /home/dev56/Soham/suspect_images
+      LOCAL_IP_URL: http://192.168.11.87:7000/suspect_images
+      SUSPECT_IMG_DIR: /home/dev56/Soham/suspect_images
     depends_on:
       - mysql
     restart: always
@@ -43,16 +57,20 @@ services:
     ports:
       - "8080:80"    # FRONTEND OPEN ON LOCALHOST:8080
     environment:
-      REACT_APP_ENV: local
-      REACT_APP_API_HOST: http://localhost:8000/api/v1
+      REACT_APP_ENV: ${FRONTEND_APP_ENVIRONMENT}
+      REACT_APP_IP: ${AUTO_SERVING_API_IP}
+      REACT_APP_API_HOST: ${AUTO_SERVING_API_HOST}
+      
     restart: always
 
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"      # PUBLIC ROOT → localhost
+      - "7000:80"      # PUBLIC ROOT → localhost
     volumes:
       - ./frontend/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /home/dev56/Soham/frames/vfs/videos:/videos  # allow nginx to serve mp4
+      - /home/dev56/Soham/suspect_images:/suspect_images
     depends_on:
       - vfs-auto-serving-ui
       - vfs-auto-serving-api

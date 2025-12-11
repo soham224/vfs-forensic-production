@@ -2,12 +2,13 @@ version: '3.8'
 services:
   vfs-notifier:
     image: vfs_notifier_videos
-    build: .
+    build: ./notifier-videos
     container_name: vfs-notifier-service
     restart: always
     env_file:
       - .env
     volumes:
-      - /home/dev1079/frames/vfs/logs:/app/logs
-      - /home/dev1079/frames/vfs/client:/home/dev1079/frames/vfs/client
-      - /home/dev1079:/home/dev1079
+      - /home/dev56/:/app/logs
+      - /home/dev56/Soham/Client_video:/home/dev56/Soham/Client_video
+      - /home/dev56/Soham/frames/vfs/videos:/home/dev56/Soham/frames/vfs/videos
+      - /home/dev56:/home/dev56
