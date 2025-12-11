@@ -1,5 +1,5 @@
-export MYSQL_HOSTNAME=localhost
-export MYSQL_USERNAME=root
+export MYSQL_HOSTNAME=192.167.11.97
+export MYSQL_USERNAME=admin
 export MYSQL_PASS=Root@123
 export MYSQL_PORT=3306
 export MYSQL_DB_NAME=vfs-try-1

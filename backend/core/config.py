@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     MYSQL_PASS = os.environ["MYSQL_PASS"]
     MYSQL_PORT: int = os.environ["MYSQL_PORT"]
     MYSQL_DB_NAME = os.environ["MYSQL_DB_NAME"]
-    MYSQL_POOL_SIZE = int(os.environ["MYSQL_POOL_SIZE"])
+    MYSQL_POOL_SIZE = int(os.getenv("MYSQL_POOL_SIZE", 20))
     MYSQL_MAX_OVERFLOW = int(os.environ["MYSQL_MAX_OVERFLOW"])
     MYSQL_POOL_TIMEOUT = int(os.environ["MYSQL_POOL_TIMEOUT"])
     MYSQL_POOL_PRE_PING = os.environ["MYSQL_POOL_PRE_PING"]
