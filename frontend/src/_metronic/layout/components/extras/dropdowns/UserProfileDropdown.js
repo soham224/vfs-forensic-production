@@ -37,7 +37,7 @@ export function UserProfileDropdown() {
   };
   const handleExitClick = (e) => {
     e.stopPropagation();
-    navigate('/admin/usecase') // Navigate to the desired route
+    navigate('/admin/dashboard') // Navigate to the desired route
   };
 
   const hideExitRoutes = [

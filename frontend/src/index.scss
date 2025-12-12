@@ -734,6 +734,45 @@ body {
   bottom: 100% !important;
 }
 
-.table-wrapper .react-bootstrap-table {
-  height: calc(100vh - 710px) !important;
+//.table-wrapper .react-bootstrap-table {
+//  height: calc(100vh - 710px) !important;
+//}
+
+.table-wrapper {
+  max-height: 440px; /* adjust as needed */
+  overflow-y: auto;
+  overflow-x: hidden !important;   /* ✅ ADD THIS */
 }
+/* 📌 X-scroll only on Mobile & Tablet */
+@media (max-width: 992px) {
+  .table-wrapper {
+    overflow-x: hidden !important;
+  }
+
+  /* When scrolling allowed, table must have minimum width */
+  .table-wrapper table {
+    min-width: 900px !important; /* adjust based on your columns */
+  }
+}
+
+/* 📌 No X-scroll on Laptop/Desktop */
+@media (min-width: 993px) {
+  .table-wrapper {
+    overflow-x: hidden !important;
+  }
+}
+
+
+.table-wrapper table {
+  border-collapse: separate !important;
+  //table-layout: fixed !important;  /* ✅ ADD THIS */
+  width: 100% !important;          /* prevents table expansion */
+}
+
+.table-wrapper .table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff; /* keep header visible */
+  z-index: 2;
+}
+

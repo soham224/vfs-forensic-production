@@ -77,7 +77,7 @@ function ResultPage() {
     };
 
     const   filterResult = (e) => {
-        const searchStr = e?.target?.value || searchInput.current.value;
+        // const searchStr = e?.target?.value || searchInput.current.value;
     };
 
     const handleCardData = (data, i) => {

@@ -6,7 +6,6 @@ import {FaDownload} from "react-icons/fa";
 import {DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown} from "reactstrap";
 import SVG from "react-inlinesvg";
 import {CaseStatusClasses, formatStatus} from "../../Investing Forensic/VfsManage";
-import jsPDF from "jspdf";
 import * as actions from "../../../_redux/VFSAction";
 import {useDispatch} from "react-redux";
 import {Visibility} from "@mui/icons-material";
@@ -18,13 +17,13 @@ function DrillDownResultCaseModal({
                                       modalShow,
                                       handleClose,
                                       modalData,
-                                      currentImageIndex
+
                                   }) {
     const dispatch = useDispatch();
     const [showReportModal, setShowReportModal] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [selectedCase, setSelectedCase] = useState(null);
-
+    const [downloading, setDownloading] = useState(false);
     const [reportModalDetails, setReportModalDetails] = useState([]);
     const [reportModalName, setReportModalName] = useState('');
     const paginationOptions = {
@@ -38,7 +37,6 @@ function DrillDownResultCaseModal({
         alwaysShowAllBtns: true,
         showTotal: true
     };
-
 
     const handleCaseReportcChart = (cell , row) => {
 
@@ -55,7 +53,33 @@ function DrillDownResultCaseModal({
     const closeReportModal = () => {
         setShowReportModal(false);
     };
+
+    const formatCreatedDate = (dateString) => {
+        if (!dateString) return "-";
+        return new Date(dateString).toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata"
+        });
+    };
+
+
     const columns = [
+        {
+            dataField: "index",
+            text: "#",
+            formatter: (cell, row, rowIndex) => {
+                // DrillDownResultCaseModal has NO pagination state,
+                // so use rowIndex directly.
+                const globalIndex = rowIndex + 1;
+
+                const numberStr =
+                    globalIndex.toString().length >= 4
+                        ? globalIndex.toString()
+                        : globalIndex.toString().padStart(4, "0");
+
+                return `CASE-${numberStr}`;
+            },
+            // headerStyle: { width: "140px" }
+        },
         {
             dataField: "case_id",
             text: "Case Id/File No.",
@@ -64,7 +88,7 @@ function DrillDownResultCaseModal({
                 return order === 'asc' ? <span>&#x2191;</span> : <span>&#x2193;</span>;
             },
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            // style: { minWidth: "55px" },
             formatter: (cellContent, row) => {
                 const lastSegment = row?.case_id.split('-').pop();
                 return `VFS-CASE-${lastSegment}`;
@@ -75,14 +99,23 @@ function DrillDownResultCaseModal({
             text: "Case Name",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            // style: { minWidth: "55px" },
         },
+        {
+            dataField: "created_date",
+            text: "Created Date",
+            sortCaret: sortCaret,
+            headerSortingClasses,
+            // style: { minWidth: "140px" },
+            formatter: (cell, row) => formatCreatedDate(row.created_date),
+        },
+
         {
             dataField: "case_status",
             text: "Case Status",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            // style: { minWidth: "55px" },
             formatter: (cellContent, row) => (
                 <span className={CaseStatusClasses[row.case_status]}>
                     {formatStatus(row.case_status)}
@@ -94,7 +127,7 @@ function DrillDownResultCaseModal({
             text: "Case Report",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            // style: { minWidth: "55px" },
             formatter: (cellContent, row) => {
                 return (
                     <>
@@ -112,11 +145,35 @@ function DrillDownResultCaseModal({
                                 <a
                                     title="Download Report"
                                     className="btn btn-icon btn-light btn-hover-light-inverse btn-sm mx-3"
-                                    onClick={handleCaseReportDownload}
+                                    onClick={() => !downloading && handleCaseReportDownload(row)}
+                                    disabled={downloading}
                                 >
-                                    <span className="svg-icon svg-icon-md svg-icon-light-inverse">
+                                  <span className="svg-icon svg-icon-md svg-icon-light-inverse">
+                                    {downloading ? (
+                                        <div
+                                            style={{
+                                                position: 'fixed',
+                                                top: 0,
+                                                left: 0,
+                                                width: '100%',
+                                                height: '100%',
+                                                background: 'rgba(0,0,0,0.4)',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                zIndex: 9999,
+                                                color: '#fff',
+                                                fontSize: '1.5rem',
+                                                flexDirection: 'column'
+                                            }}
+                                        >
+                                            <div className="spinner-border text-light mb-3" role="status" />
+                                            Downloading report...
+                                        </div>
+                                    ) : (
                                         <FaDownload style={{ fontSize: "2rem" }} />
-                                    </span>
+                                    )}
+                                  </span>
                                 </a>
                             </>
                         ) : (
@@ -131,7 +188,7 @@ function DrillDownResultCaseModal({
             text: "Action",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            // style: { minWidth: "55px" },
             formatter: (cellContent, row) => (
                 <UncontrolledDropdown direction="left">
                     <DropdownToggle className="dropdown-toggle-btn">
@@ -157,14 +214,47 @@ function DrillDownResultCaseModal({
         setSelectedCase(null);
     };
 
-    const handleCaseReportDownload = () => {
-        const doc = new jsPDF();
-        doc.text("Case Report", 20, 20);
-        doc.text("Suspect: Soham", 20, 30);
-        doc.text("Event Details: Case 0001", 20, 40);
-        doc.text("Status: In Progress", 20, 50);
-        doc.save('case_report.pdf');
+    const handleCaseReportDownload = (row) => {
+        console.log("handleCaseReportDownload row", row);
+        setDownloading(true); // start loader
+
+        dispatch(actions.getGenerateCaseReportByCaseIds(row?.id))
+            .then((response) => {
+                if (response) {
+                    // If backend returns Base64 PDF string:
+                    // const byteCharacters = atob(response.pdfData);
+                    // const byteNumbers = new Array(byteCharacters.length);
+                    // for (let i = 0; i < byteCharacters.length; i++) {
+                    //   byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    // }
+                    // const byteArray = new Uint8Array(byteNumbers);
+                    // const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                    // If backend directly returns Blob:
+                    const blob = new Blob([response], { type: 'application/pdf' });
+
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `case_report_${row?.id || 'report'}.pdf`;
+                    link.click();
+
+                    // Cleanup
+                    window.URL.revokeObjectURL(url);
+                }
+            })
+            .catch((error) => {
+                console.error("Error generating PDF:", error);
+            });
     };
+    // const handleCaseReportDownload = () => {
+    //     const doc = new jsPDF();
+    //     doc.text("Case Report", 20, 20);
+    //     doc.text("Suspect: Soham", 20, 30);
+    //     doc.text("Event Details: Case 0001", 20, 40);
+    //     doc.text("Status: In Progress", 20, 50);
+    //     doc.save('case_report.pdf');
+    // };
 
     const convertToIST = (utcDate) => {
         const date = new Date(utcDate);

@@ -85,7 +85,7 @@ function Login(props) {
           if (data.user_status) {
             dispatch(props.setUser(data));
             if (data.roles[0].role === ADMIN_ROLE) {
-              window.location.href = "#" + ADMIN_URL + "/usecase";
+              window.location.href = "#" + ADMIN_URL + "/dashboard";
             } else if (data.roles[0].role === SUPER_ADMIN_ROLE) {
               window.location.href = "#/dashboard";
             } else if (data.roles[0].role === SUPERVISOR_ROLE) {

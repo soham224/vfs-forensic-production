@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import VfsModal from "./VfsWizardModal";
 import moment from "moment";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import {shallowEqual, useDispatch, useSelector} from "react-redux";
 import * as actions from "../../_redux/VFSAction";
 import {
     Card,
@@ -13,10 +13,10 @@ import {
     DropdownItem,
     CardFooter,
 } from "reactstrap";
-import { SearchText } from "../../../../../../utils/SearchText";
+import {SearchText} from "../../../../../../utils/SearchText";
 import {fetchCase} from "../../_redux/VFSAction";
-import { headerSortingClasses, sortCaret, toAbsoluteUrl } from "../../../../../../_metronic/_helpers";
-import { FaDownload } from "react-icons/fa";
+import {headerSortingClasses, sortCaret, toAbsoluteUrl} from "../../../../../../_metronic/_helpers";
+import {FaDownload} from "react-icons/fa";
 import SVG from "react-inlinesvg";
 import CaseDetailsModal from "./CaseDetailsModal";
 import ReportModal from "./ReportDetailsModal";
@@ -40,10 +40,8 @@ function VfsManage() {
     });
     const [selectedCameras, setSelectedCameras] = useState([]);
     const [selectedVideos, setSelectedVideos] = useState([]);
-    const [suspects, setSuspects] = useState([{ image: null, name: '' }]);
+    const [suspects, setSuspects] = useState([{image: null, name: ''}]);
     const [filterEntities, setFilterEntities] = useState([]);
-    // const [pageNo, setPageNo] = useState(1);
-    // const [totalCount, setTotalCount] = useState(0);
     const [selectedCase, setSelectedCase] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
@@ -54,8 +52,7 @@ function VfsManage() {
     const [selectedCaseStatus, setSelectedCaseStatus] = useState(null);
     const [reportModalDetails, setReportModalDetails] = useState([]);
     const [reportModalName, setReportModalName] = useState('');
-    const [downloading, setDownloading] = useState(false);
-
+    const [downloadingRowId, setDownloadingRowId] = useState(null);
 
     useEffect(() => {
         const data = {
@@ -66,7 +63,7 @@ function VfsManage() {
         dispatch(fetchCase(data));
     }, [dispatch, pageSize]);
 
-    const { vfsAlldatashow } = useSelector(
+    const {vfsAlldatashow} = useSelector(
         state => ({
             vfsAlldatashow: state.vfs?.entities || [],
         }),
@@ -79,30 +76,38 @@ function VfsManage() {
     };
 
 
-    const handleCaseReport = ( row) => {
+    const handleCaseReport = (row) => {
         setShowReportModal(true);
         dispatch(actions.getSuspectJourneyByCaseIds(row?.id)).then(response => {
             if (response) {
                 setReportModalDetails(response);
                 setReportModalName(`CASE-${row.case_id.split('-').pop()}`);
-            }})
+            }
+        })
 
 
+    };
+
+    const formatCreatedDate = (dateString) => {
+        if (!dateString) return "-";
+        return moment(dateString).format("DD-MM-YYYY HH:mm:ss");
     };
 
     const closeReportModal = () => {
         setShowReportModal(false);
     };
 
+    const getRowKey = (row) => row?.id ?? row?.case_id ?? row?.caseId;
+
     const handleCaseReportDownload = (row) => {
         console.log("handleCaseReportDownload row", row);
-        setDownloading(true); // start loader
+        // setDownloading(true); // start loader
+        const rowKey = getRowKey(row);
+        setDownloadingRowId(rowKey);
 
         dispatch(actions.getGenerateCaseReportByCaseIds(row?.id))
             .then((response) => {
                 if (response) {
-                    console.log("response::::::::::", response);
-
                     // If backend returns Base64 PDF string:
                     // const byteCharacters = atob(response.pdfData);
                     // const byteNumbers = new Array(byteCharacters.length);
@@ -113,7 +118,7 @@ function VfsManage() {
                     // const blob = new Blob([byteArray], { type: 'application/pdf' });
 
                     // If backend directly returns Blob:
-                    const blob = new Blob([response], { type: 'application/pdf' });
+                    const blob = new Blob([response], {type: 'application/pdf'});
 
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
@@ -123,12 +128,22 @@ function VfsManage() {
 
                     // Cleanup
                     window.URL.revokeObjectURL(url);
+
                 }
             })
             .catch((error) => {
                 console.error("Error generating PDF:", error);
-            });
+            }).finally(() => {
+            setDownloadingRowId(null);
+        });
     };
+
+    const tableData = useMemo(() => (
+        filterEntities.map(entity => ({
+            ...entity,
+            __isDownloading: downloadingRowId !== null && getRowKey(entity) === downloadingRowId
+        }))
+    ), [filterEntities, downloadingRowId]);
 
 
     const handleCaseModalShow = () => {
@@ -139,8 +154,8 @@ function VfsManage() {
         setCaseModalShow(false);
         setSelectedCameras([]);
     };
-    const { user } = useSelector(
-        ({ auth }) => ({
+    const {user} = useSelector(
+        ({auth}) => ({
             user: auth.user,
         }),
         shallowEqual
@@ -148,7 +163,7 @@ function VfsManage() {
     const convertToIST = (utcDate) => {
         const date = new Date(utcDate);
         // Use toLocaleString to format the date as per India Time (IST)
-        return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        return date.toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'});
     };
 
 
@@ -208,8 +223,8 @@ function VfsManage() {
             case_name: caseData.caseName,
             case_description: caseData.caseDescription,
             case_status: "OPEN",
-            camera_ids : selectedCameras,
-            video_ids : selectedVideos
+            camera_ids: selectedCameras,
+            video_ids: selectedVideos
         };
 
         // Create the case first
@@ -233,7 +248,7 @@ function VfsManage() {
                             .then(res => res.blob())
                             .then(imageBlob => {
                                 // Create a File from the Blob
-                                const imageFile = new File([imageBlob], "image.jpg", { type: imageBlob.type });
+                                const imageFile = new File([imageBlob], "image.jpg", {type: imageBlob.type});
                                 formData.append("file", imageFile);
                                 // Dispatch API call for the suspect
                                 return dispatch(actions.addSuspects(formData));
@@ -285,6 +300,22 @@ function VfsManage() {
 
     const columns = [
         {
+            dataField: "index",
+            text: "#",
+            formatter: (cell, row, rowIndex) => {
+                const globalIndex = (currentPage - 1) * pageSize + (rowIndex + 1);
+
+                // Format logic: min length = 4
+                const numberStr =
+                    globalIndex.toString().length >= 4
+                        ? globalIndex.toString()
+                        : globalIndex.toString().padStart(4, "0");
+
+                return `CASE-${numberStr}`;
+            },
+            headerStyle: {width: "140px"}
+        },
+        {
             dataField: "case_id",
             text: "Case Id/File No.",
             sortCaret: (column, order) => {
@@ -292,24 +323,32 @@ function VfsManage() {
                 return order === 'asc' ? <span>&#x2191;</span> : <span>&#x2193;</span>;
             },
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            style: {minWidth: "55px"},
             formatter: (cellContent, row) => {
                 return `CASE-${row.case_id.split('-').pop()}`;
             },
+        },
+        {
+            dataField: "created_date",
+            text: "Created Date",
+            sortCaret,
+            headerSortingClasses,
+            style: {minWidth: "140px"},
+            formatter: (cellContent, row) => formatCreatedDate(row.created_date),
         },
         {
             dataField: "case_name",
             text: "Case Name",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            style: {minWidth: "55px"},
         },
         {
             dataField: "case_status",
             text: "Case Status",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            style: {minWidth: "55px"},
             formatter: (cellContent, row) => (
                 <span className={CaseStatusClasses[row.case_status]}>
                     {formatStatus(row.case_status)}
@@ -321,7 +360,7 @@ function VfsManage() {
             text: "Case Report",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            style: {minWidth: "55px"},
             formatter: (cellContent, row) => {
                 return (
                     <>
@@ -330,49 +369,32 @@ function VfsManage() {
                                 <a
                                     title="View Report"
                                     className="btn btn-icon btn-light btn-hover-light-inverse btn-sm mx-3"
-                                    onClick={()=>handleCaseReport(row)}
+                                    onClick={() => handleCaseReport(row)}
                                 >
                                 <span className="svg-icon svg-icon-md svg-icon-light-inverse">
-                                    <Visibility style={{ fontSize: "2rem" }} />
+                                    <Visibility style={{fontSize: "2rem"}}/>
                                 </span>
                                 </a>
                                 <a
                                     title="Download Report"
                                     className="btn btn-icon btn-light btn-hover-light-inverse btn-sm mx-3"
-                                    onClick={() => !downloading && handleCaseReportDownload(row)}
-                                    disabled={downloading}
+                                    onClick={() => handleCaseReportDownload(row)}
+                                    style={row.__isDownloading ? { pointerEvents: "none", opacity: 0.6 } : undefined}
                                 >
                                   <span className="svg-icon svg-icon-md svg-icon-light-inverse">
-                                    {downloading ? (
-                                        <div
-                                            style={{
-                                                position: 'fixed',
-                                                top: 0,
-                                                left: 0,
-                                                width: '100%',
-                                                height: '100%',
-                                                background: 'rgba(0,0,0,0.4)',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                zIndex: 9999,
-                                                color: '#fff',
-                                                fontSize: '1.5rem',
-                                                flexDirection: 'column'
-                                            }}
-                                        >
-                                            <div className="spinner-border text-light mb-3" role="status" />
-                                            Downloading report...
-                                        </div>
+                                    {row.__isDownloading ? (
+                                        <span className="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span className="sr-only">Loading...</span>
+                                        </span>
                                     ) : (
-                                        <FaDownload style={{ fontSize: "2rem" }} />
+                                        <FaDownload style={{fontSize: "2rem"}}/>
                                     )}
                                   </span>
                                 </a>
 
                             </>
                         ) : (
-                            <span className={CaseStatusClasses['RESOLVED']}>In Progress</span>
+                            <span className={CaseStatusClasses['IN_PROGRESS']}>In Progress</span>
                         )}
                     </>
                 );
@@ -383,25 +405,25 @@ function VfsManage() {
             text: "Action",
             sortCaret: sortCaret,
             headerSortingClasses,
-            style: { minWidth: "55px" },
+            style: {minWidth: "55px"},
             formatter: (cellContent, row) => (
                 <UncontrolledDropdown direction="left">
                     <DropdownToggle className="dropdown-toggle-btn">
                         <span className="svg-icon">
-                            <SVG src={toAbsoluteUrl("/media/svg/icons/General/Other1.svg")} />
+                            <SVG src={toAbsoluteUrl("/media/svg/icons/General/Other1.svg")}/>
                         </span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu-color">
                         <DropdownItem className="dropdown-item-custom" onClick={() => handleCaseNameClick(row)}>
                             <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Info-circle.svg")}
-                                 style={{ width: '16px', height: '16px' }}
-                                 className="svg-icon" />
+                                 style={{width: '16px', height: '16px'}}
+                                 className="svg-icon"/>
                             <span className={'ml-2'}>Details</span>
                         </DropdownItem>
                         <DropdownItem className="dropdown-item-custom" onClick={() => handleCaseStatusClick(row)}>
                             <SVG src={toAbsoluteUrl("/media/svg/icons/Code/Info-circle.svg")}
-                                 style={{ width: '16px', height: '16px' }}
-                                 className="svg-icon" />
+                                 style={{width: '16px', height: '16px'}}
+                                 className="svg-icon"/>
                             <span className={'ml-2'}>Change Status</span>
                         </DropdownItem>
                     </DropdownMenu>
@@ -456,7 +478,7 @@ function VfsManage() {
                     Investing Forensic
                     <div className="d-flex justify-content-between align-items-center">
                         {/*{filterEntities.length > 0 && (*/}
-                            <SearchText reference={searchInput} onChangeHandler={filterForensic} />
+                        <SearchText reference={searchInput} onChangeHandler={filterForensic}/>
                         {/*)}*/}
                         <button
                             type="button"
@@ -484,12 +506,12 @@ function VfsManage() {
                             bordered={false}
                             bootstrap4
                             keyField="id"
-                            data={filterEntities}
+                            data={tableData}
                             columns={columns}
                             remote
                         />
                     ) : (
-                        <div className="text-center" style={{ fontSize: " 1.5rem", color: "#6c757d" }}>
+                        <div className="text-center" style={{fontSize: " 1.5rem", color: "#6c757d"}}>
                             No data Found
                         </div>
                     )}
@@ -514,7 +536,7 @@ function VfsManage() {
                                             Previous
                                         </button>
                                     </li>
-                                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                                    {Array.from({length: totalPages}, (_, index) => index + 1).map(
                                         (pageNumber) => (
                                             <li
                                                 key={pageNumber}
@@ -546,7 +568,7 @@ function VfsManage() {
                                     className="form-control"
                                     value={pageSize}
                                     onChange={handlePageSizeChange}
-                                    style={{ width: "80px" }}
+                                    style={{width: "80px"}}
                                 >
                                     <option value={10}>10</option>
                                     <option value={25}>25</option>
@@ -572,6 +594,7 @@ function VfsManage() {
                 setSelectedCameras={setSelectedCameras}
                 selectedVideos={selectedVideos}
                 setSelectedVideos={setSelectedVideos}
+                filterEntities={filterEntities}
             />
 
 

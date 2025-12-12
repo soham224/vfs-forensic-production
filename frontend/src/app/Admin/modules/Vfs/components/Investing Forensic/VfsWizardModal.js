@@ -28,7 +28,8 @@ function VfsWizardModal({
                             selectedCameras,
                             setSelectedCameras,
                             setSelectedVideos,
-                            selectedVideos
+                            selectedVideos,
+
                         }) {
     const dispatch = useDispatch();
     const [activeStep, setActiveStep] = useState(0);
@@ -45,6 +46,9 @@ function VfsWizardModal({
     const [searchText, setSearchText] = useState("");
     const [selectedVideoTypeValue, setSelectedVideoTypeValue] = useState("video"); // Initial state
     const [videoAll, setVideoAll] = useState([]);
+
+    const [caseNameError, setCaseNameError] = useState("");
+    const [checkingName, setCheckingName] = useState(false);
 
 
     const CustomStepper = styled(Stepper)({
@@ -80,6 +84,7 @@ function VfsWizardModal({
     // Fetch locations when component mounts
     useEffect(() => {
         if (caseModalShow) {
+            setCaseNameError("")
             dispatch(action.fetchLocation());
         }
     }, [dispatch, caseModalShow]);
@@ -126,9 +131,51 @@ function VfsWizardModal({
         }
     }, [caseModalShow]);
 
+    // const handleNext = () => {
+    //     setActiveStep(prev => prev + 1);
+    // };
+
     const handleNext = () => {
-        setActiveStep(prev => prev + 1);
+        if (activeStep === 0) {
+            validateCaseNameAndNext();
+        } else {
+            setActiveStep(prev => prev + 1);
+        }
     };
+
+    const validateCaseNameAndNext = async () => {
+        setCaseNameError("");
+        setCheckingName(true);
+
+        const name = caseData.caseName.trim();
+
+        if (!name) {
+            setCaseNameError("Case name is required");
+            setCheckingName(false);
+            return;
+        }
+
+        try {
+            const dataname = {
+                'case_name' : name
+            }
+            const response = await dispatch(actions.checkCaseNameExists(dataname));
+            // response looks like: { is_unique: true/false, message: "..." }
+
+            if (!response?.is_unique) {
+                // Duplicate case name found
+                setCaseNameError(response?.message || "Case name already exists. Please choose another.");
+            } else {
+                // Unique → move to next step
+                setActiveStep(prev => prev + 1);
+            }
+        } catch (error) {
+            setCaseNameError("Something went wrong. Please try again.");
+        }
+
+        setCheckingName(false);
+    };
+
 
     const handleBack = () => {
         setActiveStep(prev => prev - 1);
@@ -264,6 +311,7 @@ function VfsWizardModal({
     };
 
     const caseModalOnClose = () => {
+        setCaseNameError("")
         setLocationValue([])
         setSelectedCameras([])
         caseModalOnHide()
@@ -275,15 +323,6 @@ function VfsWizardModal({
         setLocationValue([])
         setSelectedCameras([])
         setCameraNameByLocationID([])
-    };
-
-
-    const isStepOneValid = () => {
-        return caseData.caseName.trim() !== '' && caseData.caseDescription.trim() !== '';
-    };
-
-    const isStepTwoValid = () => {
-        return selectedCameras.length > 0 || selectedVideos.length > 0;
     };
 
 
@@ -348,11 +387,19 @@ function VfsWizardModal({
                                 <Row>
                                     <Col sm={12}>
                                         <Form.Label>Case Name</Form.Label>
+                                        {/*<Form.Control*/}
+                                        {/*    type="text"*/}
+                                        {/*    value={caseData.caseName}*/}
+                                        {/*    onChange={(e) => setCaseData({...caseData, caseName: e.target.value})}*/}
+                                        {/*/>*/}
                                         <Form.Control
                                             type="text"
                                             value={caseData.caseName}
-                                            onChange={(e) => setCaseData({...caseData, caseName: e.target.value})}
+                                            onChange={(e) => setCaseData({ ...caseData, caseName: e.target.value })}
+                                            isInvalid={!!caseNameError}
                                         />
+                                        {caseNameError && <small style={{ color: "red" }}>{caseNameError}</small>}
+
                                     </Col>
                                     <Col sm={12} className="mt-3">
                                         <Form.Label>Case Description</Form.Label>
@@ -785,13 +832,21 @@ function VfsWizardModal({
                             </div>
                             <div>
 
-                                <Button onClick={handleNext} variant="primary" disabled={
-                                    // eslint-disable-next-line no-mixed-operators
-                                    activeStep === 0 && !isStepOneValid() ||
-                                    // eslint-disable-next-line no-mixed-operators
-                                    activeStep === 2 && !isStepTwoValid()}>
-                                    Next
+                                {/*<Button onClick={handleNext} variant="primary" disabled={*/}
+                                {/*    // eslint-disable-next-line no-mixed-operators*/}
+                                {/*    activeStep === 0 && !isStepOneValid() ||*/}
+                                {/*    // eslint-disable-next-line no-mixed-operators*/}
+                                {/*    activeStep === 2 && !isStepTwoValid()}>*/}
+                                {/*    Next*/}
+                                {/*</Button>*/}
+                                <Button
+                                    onClick={handleNext}
+                                    variant="primary"
+                                    disabled={checkingName || (activeStep === 0 && caseData.caseName.trim() === "")}
+                                >
+                                    {checkingName ? "Checking..." : "Next"}
                                 </Button>
+
                             </div>
                         </>
                     ) : (

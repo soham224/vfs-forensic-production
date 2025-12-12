@@ -21,11 +21,11 @@ function InvestingForensicDashboard() {
     const [minDate, setMinDate] = useState("");
     const [maxDate, setMaxDate] = useState("");
     const [selectedIndex, setSelectedIndex] = useState(12);
+    const [forensicTotalCaseDashboard, setForensicTotalCaseDashboard] = useState([]);
     const [forensicDashboard, setForensicDashboard] = useState([]);
 
     const [isCaseLoading, setIsCaseLoading] = useState(false);
     const [caseDataResponse, setCaseDataResponse] = useState(null);
-    const [caseDataDashboard, setCaseDashboard] = useState(null);
     const [showCaseModal, setShowCaseModal] = useState(false);
     const [modalData, setModalData] = useState(null);
 
@@ -65,6 +65,12 @@ function InvestingForensicDashboard() {
         };
         getCaseStatusCounts(data)
         getCaseStatusCountPercentages(data)
+        const casedata = {
+            start_date: startDate,
+            end_date: endDate,
+            case_status: "completed",
+        };
+        getCaseStatusTotalCountPercentages(casedata);
 
         const resultData = {
             start_date: startDate,
@@ -89,7 +95,17 @@ function InvestingForensicDashboard() {
         })
     }
 
-    const getCaseStatusCounts =(data)=>{
+    const getCaseStatusTotalCountPercentages = (data) => {
+        getCaseStatusCountPercentage(data).then((response) => {
+            if (response?.data) {
+                setForensicTotalCaseDashboard(response.data.data);
+            }
+        });
+        }
+
+
+
+        const getCaseStatusCounts =(data)=>{
         getCaseStatusCount(data).then((response) => {
             if(response?.data){
                 if(response?.data){
@@ -209,7 +225,19 @@ function InvestingForensicDashboard() {
             <div className={'row'}>
                 <div className="col-12 col-md-6 col-lg-6">
                     <PieChartComponent
-                        title="Investing Forensic"
+                        title="Case Status"
+                        salesData={forensicTotalCaseDashboard}
+                        dropdown={true}
+                        // details={""}
+                        chartType={"pie"}
+                        colorByPoint={true}
+                        name={"Investing Forensic"}
+                        chartLoading={false}
+                    />
+                </div>
+                <div className="col-12 col-md-6 col-lg-6">
+                    <PieChartComponent
+                        title="Case Details"
                         salesData={forensicDashboard}
                         dropdown={true}
                         chartType={"pie"}
@@ -219,7 +247,7 @@ function InvestingForensicDashboard() {
                     />
 
                 </div>
-                <div className="col-12 col-md-6 col-lg-6 mb-4">
+                <div className="col-12 col-md-12 col-lg-12  mt-5">
                     <App
                         t title={'Case Graph By Time'}
                         count={''}

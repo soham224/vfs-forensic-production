@@ -10,6 +10,7 @@ const GET_CAMERA_RTSP_BY_ID="/get_camera_rtsp_by_id"
 const GET_LATEST_FRAME_BY_RTSP="/get_latest_frame_by_rtsp"
 const GET_CAMERA_ROI="/get_camera_roi"
 const UPDATE_CAMERA_ROI="/update_camera_roi"
+const CASE_DUPLICATE_CHECK="/case_duplicate_check"
 
 
 export async function getAllCamera() {
@@ -70,6 +71,13 @@ export async function getCameraRoi(data) {
 export async function updateCameraRoi(data) {
   return await request({
     endpoint: UPDATE_CAMERA_ROI,
+    method: HttpRequest.POST,
+    body: data,
+  });
+}
+export async function checkCaseNameExist(data) {
+  return await request({
+    endpoint: CASE_DUPLICATE_CHECK,
     method: HttpRequest.POST,
     body: data,
   });

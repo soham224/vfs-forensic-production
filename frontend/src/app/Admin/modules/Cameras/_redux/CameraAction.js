@@ -4,7 +4,7 @@ import {
     cameraByLocationID,
     getAllVideos,
     getAllUsecaseType,
-    updateCameraUsecaseType, getCameraRtspById, getLatestFrameByRtsps, getCameraRoi, updateCameraRoi
+    updateCameraUsecaseType, getCameraRtspById, getLatestFrameByRtsps, getCameraRoi, updateCameraRoi, checkCaseNameExist
 } from "./CameraAPI";
 
 const { actions } = CameraSlice;
@@ -138,6 +138,23 @@ export const getCameraRois = (data) => (dispatch) => {
 export const updateCameraRois = (data) => (dispatch) => {
     dispatch(actions.startCall({ callType: callTypes.action }));
     return updateCameraRoi(data)
+        .then((response) => {
+            if (response && response.isSuccess) {
+                return response.data
+            } else {
+                throw new Error("Error getting camera details");
+            }
+        })
+        .catch((error) => {
+            console.log("error:::", error)
+            dispatch(actions.catchError({ error, callType: callTypes.action }));
+        });
+};
+
+
+export const checkCaseNameExists = (name) => (dispatch) => {
+    dispatch(actions.startCall({ callType: callTypes.action }));
+    return checkCaseNameExist(name)
         .then((response) => {
             if (response && response.isSuccess) {
                 return response.data
