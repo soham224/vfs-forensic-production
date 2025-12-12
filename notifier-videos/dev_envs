@@ -1,19 +1,63 @@
-# Logging
+#!/bin/bash
+# =============================================================================
+# VFS Forensic Video Notifier Service - Development Environment Configuration
+# =============================================================================
+# This file contains environment variables for the video notifier service in
+# development mode. The notifier monitors video directories and processes
+# incoming surveillance footage.
+#
+# Usage: $ source notifier-videos/dev_envs
+#
+# Author: VFS Team
+# Environment: Development
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Logging Configuration
+# -----------------------------------------------------------------------------
+# Base directory for storing application logs
 export LOG_BASE_DIRECTORY=./
 
-# MySQL DB
-export MYSQL_USER=root
-export MYSQL_PASS=Root@123
-export MYSQL_HOST=localhost
-export MYSQL_PORT=3306
-export MYSQL_DB_NAME=vfs-try-2
+# -----------------------------------------------------------------------------
+# MySQL Database Configuration
+# -----------------------------------------------------------------------------
+# Database connection settings for video metadata and forensic case data
 
-# Notifier
+export MYSQL_USER=root                   # Database user with read/write privileges
+export MYSQL_PASS=Root@123              # Database user password
+export MYSQL_HOST=localhost              # MySQL server hostname or IP address
+export MYSQL_PORT=3306                   # MySQL server port (default: 3306)
+export MYSQL_DB_NAME=vfs-try-2          # Target database name (must match backend DB)
+
+# -----------------------------------------------------------------------------
+# Video Processing and Notifier Configuration
+# -----------------------------------------------------------------------------
+
+# Interval (in seconds) for polling video directories for new files
+# Lower values = faster detection but higher CPU usage
 export FOLDER_POLL_INTERVAL=5
+
+# Directory where client surveillance cameras upload video files
+# This directory is monitored for new incoming video footage
 export CLIENT_VIDEO_DIR=/home/dev1079/frames/vfs/client
+
+# Internal directory path where processed videos are stored
+# Videos are moved here after initial processing and metadata extraction
 export INTERNAL_VIDEO_FOLDER_PATH=/home/dev1079/Desktop/vfs_videos
 
-# URL construction (no-copy mode)
+# -----------------------------------------------------------------------------
+# NGINX Static File Serving Configuration (No-Copy Mode)
+# -----------------------------------------------------------------------------
+# These settings configure direct video serving via NGINX without copying files
+
+# Root directory that NGINX serves video files from
+# Must be accessible by NGINX with proper read permissions
 export NGINX_SERVE_DIRECTORY=/home/dev1079/Desktop/vfs_videos
+
+# Base filesystem path for constructing absolute paths
 export BASE_PATH=/home/dev1079
+
+# Base URL where NGINX serves the video files
+# Format: http://hostname:port or http://ip_address:port
+# Videos will be accessible at: NGINX_BASE_URL/relative_video_path
 export NGINX_BASE_URL=http://192.168.11.97

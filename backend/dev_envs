@@ -1,20 +1,90 @@
-export MYSQL_HOSTNAME=localhost
-export MYSQL_USERNAME=root
-export MYSQL_PASS=Root@123
-export MYSQL_PORT=3306
-export MYSQL_DB_NAME=vfs-try-2
-export PROJECT_ENV=development
+# !/bin/bash
+# =============================================================================
+# VFS Forensic Backend - Development Environment Configuration
+# =============================================================================
+# This file contains environment variables for the backend service in
+# development mode. Source this file before running the application:
+# $ source backend/dev_envs
+#
+# Author: VFS Team
+# Environment: Development
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# MySQL Database Configuration
+# -----------------------------------------------------------------------------
+# Database connection settings for the main VFS forensic database
+
+export MYSQL_HOSTNAME=localhost          # MySQL server hostname or IP address
+export MYSQL_USERNAME=root               # Database user with appropriate privileges
+export MYSQL_PASS=Root@123              # Database user password
+export MYSQL_PORT=3306                   # MySQL server port (default: 3306)
+export MYSQL_DB_NAME=vfs-try-2          # Target database name for VFS application
+
+# -----------------------------------------------------------------------------
+# Database Connection Pool Configuration
+# -----------------------------------------------------------------------------
+# SQLAlchemy connection pool settings for optimal performance
+
+export MYSQL_POOL_SIZE=20               # Number of permanent connections in pool
+export MYSQL_MAX_OVERFLOW=30            # Maximum additional connections beyond pool_size
+export MYSQL_POOL_TIMEOUT=60            # Seconds to wait for connection before timeout
+export MYSQL_POOL_PRE_PING=True         # Test connections before using (prevents stale connections)
+
+# -----------------------------------------------------------------------------
+# Application Environment
+# -----------------------------------------------------------------------------
+export PROJECT_ENV=development           # Current environment (development/staging/production)
+
+# -----------------------------------------------------------------------------
+# External API Endpoints
+# -----------------------------------------------------------------------------
+# API endpoint for retrieving camera Region of Interest (ROI) data
 export ROI_API_ENDPOINT=https://dev.asapi.tusker.ai/api/v1/get_camera_roi_by_user_id
+
+# -----------------------------------------------------------------------------
+# OpenCV and Video Processing Configuration
+# -----------------------------------------------------------------------------
+# List of user IDs for which CV2 video processing is enabled
+# Format: JSON array of user IDs
 export USER_ID_CV2='[1]'
-export MYSQL_POOL_SIZE=20
-export MYSQL_MAX_OVERFLOW=30
-export MYSQL_POOL_TIMEOUT=60
-export MYSQL_POOL_PRE_PING=True
+
+# -----------------------------------------------------------------------------
+# File System Paths
+# -----------------------------------------------------------------------------
+# Directory paths for storing various application data
+
+# Base directory for storing suspect images uploaded by clients
 export BASE_DIR=/home/dev1079/frames/vfs/client/suspect_images
+
+# Directory for storing RTSP camera connectivity check data
 export CHECK_RTSP_DATA=./client_data/check_rtsp_data
-export LICENSE_SECRET_KEY=secret_key
-export TOTAL_CHAIRS_COUNT='{"1":10, "2":10, "3":10}'
+
+# Path where recorded videos from cameras are stored locally
 export LOCAL_VIDEOS_PATH=/home/dev1079/frames/vfs/videos
+
+# Base path for NGINX server (used for serving static files)
 export LOCAL_NGINX_PATH=/home/dev1079
-export LOCAL_IP_URL=http://192.168.11.97
+
+# Directory for storing processed suspect images for facial recognition
 export SUSPECT_IMG_DIR=/home/dev1079/frames/vfs/suspect_images
+
+# -----------------------------------------------------------------------------
+# Security Configuration
+# -----------------------------------------------------------------------------
+# Secret key used for license validation and encryption
+export LICENSE_SECRET_KEY=secret_key
+
+# -----------------------------------------------------------------------------
+# System Resource Configuration
+# -----------------------------------------------------------------------------
+# Chair/seat capacity configuration per location/camera
+# Format: JSON object mapping location IDs to chair counts
+# Example: {"1":10, "2":10, "3":10} means location 1 has 10 chairs, etc.
+export TOTAL_CHAIRS_COUNT='{"1":10, "2":10, "3":10}'
+
+# -----------------------------------------------------------------------------
+# Network Configuration
+# -----------------------------------------------------------------------------
+# Local IP address and port for accessing the application
+export LOCAL_IP_URL=http://192.168.11.97
