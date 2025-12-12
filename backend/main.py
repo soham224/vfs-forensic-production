@@ -1,7 +1,9 @@
 import logging
+
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
+import uvicorn
 
 from api.api_v1.api import api_router
 from applogging.applogger import read_logging_config, setup_logging
@@ -40,7 +42,6 @@ except Exception as e:
 
 add_pagination(app)
 
-import uvicorn
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8004, reload=False)

@@ -24,6 +24,7 @@ class Case(Base):
     id = Column(Integer, primary_key=True, index=True)
     case_id = Column(String(255), nullable=False, unique=True)
     case_name = Column(String(255), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
     case_description = Column(String(255))
     case_status = Column(String(255), nullable=False)
     case_report = Column(String(255))

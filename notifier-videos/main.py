@@ -6,7 +6,9 @@ from config import CLIENT_VIDEO_DIR, FOLDER_POLL_INTERVAL, logger
 
 def main():
     try:
-        logger.info("Starting Video Notifier (no-copy mode): registering files directly to DB")
+        logger.info(
+            "Starting Video Notifier (no-copy mode): registering files directly to DB"
+        )
         process_existing_files()
         wm = pyinotify.WatchManager()
         mask = pyinotify.IN_CLOSE_WRITE | pyinotify.IN_MOVED_TO

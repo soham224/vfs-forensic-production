@@ -7,7 +7,7 @@ import os
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from api import deps
@@ -61,11 +61,32 @@ BOX_BORDER_COLOR = colors.HexColor("#AAAAAA")
 router = APIRouter()
 
 
+def _get_owned_case_or_404(
+    db: Session, case_id: int, current_user: models.User
+) -> Case:
+    """
+    Retrieve a case that belongs to the current active user or raise a 404 to
+    avoid leaking the existence of other users' cases.
+    """
+    case = (
+        db.query(Case)
+        .filter(
+            Case.id == case_id,
+            Case.user_id == current_user.id,
+            Case.deleted == False,
+        )
+        .first()
+    )
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    return case
+
+
 @router.post("/add_case", response_model=schemas.CaseRead)
 def add_case(
     case_details: schemas.CaseCreate,
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_admin),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Adds a new case and associates cameras with it if provided.
@@ -78,6 +99,15 @@ def add_case(
     )
     if db_case:
         raise HTTPException(status_code=400, detail="Case ID already exists.")
+
+    # Check if case_name already exists (duplicate validation)
+    existing_case_by_name = crud.case_crud_obj.get_by_name(
+        db, name=case_details.case_name, user_id=current_user.id
+    )
+    if existing_case_by_name:
+        logging.warning(f"Case name '{case_details.case_name}' already exists.")
+        raise HTTPException(status_code=400, detail="Case name already exists")
+
     # Validate mutual exclusivity of camera_ids and video_ids
     has_cameras = bool(case_details.camera_ids)
     has_videos = bool(getattr(case_details, "video_ids", []))
@@ -109,6 +139,7 @@ def add_case(
     new_case = models.Case(
         case_id=f"{uuid.uuid4()}",
         case_name=case_details.case_name,
+        user_id=current_user.id,
         case_description=case_details.case_description,
         case_status="OPEN",
         case_report="OPEN",
@@ -136,6 +167,36 @@ def add_case(
     return new_case
 
 
+@router.post("/case_duplicate_check")
+def case_duplicate_check(
+    case_name: str = Body(..., embed=True, description="Case name to check"),
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Check whether a case name already exists for the current active user scope.
+
+    Names are compared in a normalized way (trimmed + lowercased) so inputs like
+    "Demo", " demo ", and "DEMO" are treated as the same.
+    """
+    normalized_name = (case_name or "").strip().lower()
+    if not normalized_name:
+        raise HTTPException(status_code=400, detail="Case name is required")
+
+    exists = crud.case_crud_obj.exists_by_normalized_name(
+        db, normalized_name=normalized_name, user_id=current_user.id
+    )
+    if exists:
+        return {
+            "is_unique": False,
+            "message": "The case with same name already exists",
+        }
+    return {
+        "is_unique": True,
+        "message": "No duplicate case found",
+    }
+
+
 @router.post("/update_case", response_model=schemas.CaseRead)
 def update_case(
     case_details: schemas.CaseUpdate,
@@ -146,22 +207,23 @@ def update_case(
         datetime.now(timezone.utc).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
     )
 
-    # Fetch the case object from the database
-    db_obj = crud.case_crud_obj.get(db, case_details.id)
-    if not db_obj:
-        logging.warning("Data Not Found")
-        raise HTTPException(status_code=404, detail="Data Not Found")
-
-    # Check if the new case name is unique (if being updated)
-    case = crud.case_crud_obj.get_by_name(
-        db, name=case_details.case_name, company_id=current_user.company_id
+    # Fetch the case object for the current user
+    db_obj = _get_owned_case_or_404(
+        db=db, case_id=case_details.id, current_user=current_user
     )
-    if case and case.id != case_details.id:
-        logging.warning("The case name already exists in the system.")
-        raise HTTPException(
-            status_code=400,
-            detail="The case name already exists in the system.",
+
+    # Check if the new case name is unique (only if case_name is being changed)
+    # Compare with current case name to avoid unnecessary duplicate check
+    if db_obj.case_name != case_details.case_name:
+        existing_case_by_name = crud.case_crud_obj.get_by_name(
+            db,
+            name=case_details.case_name,
+            user_id=current_user.id,
+            exclude_id=case_details.id,
         )
+        if existing_case_by_name:
+            logging.warning(f"Case name '{case_details.case_name}' already exists.")
+            raise HTTPException(status_code=400, detail="Case name already exists")
 
     # Update the case details
     updated_case = crud.case_crud_obj.update(
@@ -182,70 +244,13 @@ def update_case(
     return updated_case
 
 
-# @router.post("/update_case_status", response_model=schemas.CaseRead)
-# def update_case_status(
-#     case_details: schemas.CaseStatus,
-#     db: Session = Depends(deps.get_db),
-#     current_user: models.User = Depends(deps.get_current_active_user),
-# ) -> Any:
-#     case_details.updated_date = (
-#         datetime.now(timezone.utc).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
-#     )
-#     db_obj = crud.case_crud_obj.get_by_id(db, case_details.id)
-#     if not db_obj:
-#         logging.warning("Data Not Found")
-#         raise HTTPException(status_code=404, detail="Data Not Found")
-#     return crud.case_crud_obj.update(
-#         db=db,
-#         db_obj=db_obj,
-#         obj_in={
-#             "status": case_details.status,
-#             "updated_date": case_details.updated_date,
-#         },
-#     )
-
-
-# @router.get("/get_all_cases", response_model=schemas.PaginatedCaseRead)
-# def get_all_cases(
-#     page: int = Query(1, ge=1, description="Page number, starts from 1"),
-#     page_size: int = Query(10, ge=1, le=100, description="Number of items per page"),
-#     db: Session = Depends(deps.get_db),
-#     current_user: models.User = Depends(deps.get_current_active_admin),
-# ) -> Any:
-#     """
-#     Retrieve all cases with pagination and their associated cameras.
-#     """
-#     # Calculate offset for pagination
-#     offset = (page - 1) * page_size
-#
-#     # Query total count for metadata
-#     total_cases = crud.case_crud_obj.get_count(db)
-#
-#     # Fetch paginated cases
-#     cases = crud.case_crud_obj.get_all(db, skip=offset, limit=page_size)
-#
-#     if not cases:
-#         raise HTTPException(status_code=404, detail="No Data Found")
-#
-#     # Return paginated response
-#     return {
-#         "page": page,
-#         "page_size": page_size,
-#         "total": total_cases,
-#         "items": cases,
-#     }
-
-
 @router.get("/get_case_by_id", response_model=schemas.CaseRead)
 def get_case_by_id(
     case_id: int,
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    db_obj = crud.case_crud_obj.get_by_id(db, case_id)
-    if not db_obj:
-        logging.warning("Data Not Found")
-        raise HTTPException(status_code=404, detail="No Data Found")
+    db_obj = _get_owned_case_or_404(db=db, case_id=case_id, current_user=current_user)
 
     # Compute timestamps in IST without mutating the ORM object
     created_ist = (
@@ -283,7 +288,15 @@ def get_cases_by_ids(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    db_obj = crud.case_crud_obj.get_multiple_by_ids(db, case_ids)
+    db_obj = (
+        db.query(Case)
+        .filter(
+            Case.id.in_(case_ids),
+            Case.user_id == current_user.id,
+            Case.deleted == False,
+        )
+        .all()
+    )
     if not db_obj:
         logging.warning("Data Not Found")
         raise HTTPException(status_code=404, detail="No Data Found")
@@ -293,9 +306,13 @@ def get_cases_by_ids(
 @router.get("/get_all_cases", response_model=List[schemas.CaseRead])
 def get_all_case(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_admin),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    db_obj = crud.case_crud_obj.get_all(db)
+    db_obj = (
+        db.query(Case)
+        .filter(Case.deleted == False, Case.user_id == current_user.id)
+        .all()
+    )
     if not db_obj:
         logging.warning("Data Not Found")
         return []
@@ -306,10 +323,12 @@ def get_all_case(
 def get_cases_by_user(
     request: CaseRequestSchema,
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_admin),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ):
     # Unified search without restrictive joins so cases without cameras/locations are still returned
-    base_id_query = db.query(Case.id).filter(Case.deleted == False)
+    base_id_query = db.query(Case.id).filter(
+        Case.deleted == False, Case.user_id == current_user.id
+    )
     if getattr(request, "case_name", None) and request.case_name.strip() != "":
         search = f"%{request.case_name.strip()}%"
         base_id_query = base_id_query.filter(Case.case_name.ilike(search))
@@ -364,10 +383,12 @@ def get_cases_by_user(
 @router.get("/get_all_cases_by_user_id", response_model=List[schemas.CaseRead])
 def get_all_cases_by_user_id(
     db: Session = Depends(deps.get_db),
-    current_user: models.User = Depends(deps.get_current_active_admin),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    db_obj = crud.case_crud_obj.get_all_cases_by_camera_and_user(
-        db, currrent_user_id=current_user.id
+    db_obj = (
+        db.query(Case)
+        .filter(Case.deleted == False, Case.user_id == current_user.id)
+        .all()
     )
     if not db_obj:
         logging.warning("Data Not Found")
@@ -381,10 +402,7 @@ def delete_case(
     db: Session = Depends(deps.get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
-    db_obj = crud.case_crud_obj.get_by_id(db, case_id)
-    if not db_obj:
-        logging.warning("Data Not Found")
-        raise HTTPException(status_code=404, detail="Data Not Found")
+    db_obj = _get_owned_case_or_404(db=db, case_id=case_id, current_user=current_user)
     return crud.case_crud_obj.update(db=db, db_obj=db_obj, obj_in={"deleted": True})
 
 
@@ -399,7 +417,7 @@ def get_case_status_count(
     # Ensure the user has locations assigned
     if not user_location_ids:
         raise HTTPException(
-            status_code=403, detail="User does not have assigned locations."
+            status_code=404, detail="User does not have assigned locations."
         )
 
     # NOTE: Location/RTSP mapping temporarily disabled per request; counting over Case only
@@ -408,6 +426,8 @@ def get_case_status_count(
         .filter(
             Case.created_date >= case_request.start_date,
             Case.created_date <= case_request.end_date,
+            Case.user_id == current_user.id,
+            Case.deleted == False,
         )
         .group_by(Case.case_status)
         .all()
@@ -486,7 +506,7 @@ def get_case_status_count_percentage(
     # Ensure the user has locations assigned
     if not user_location_ids:
         raise HTTPException(
-            status_code=403, detail="User does not have assigned locations."
+            status_code=404, detail="User does not have assigned locations."
         )
 
     # Validate date range
@@ -502,6 +522,8 @@ def get_case_status_count_percentage(
         .filter(
             Case.created_date >= case_request.start_date,
             Case.created_date <= case_request.end_date,
+            Case.user_id == current_user.id,
+            Case.deleted == False,
         )
         .group_by(Case.case_status)
         .all()
@@ -546,10 +568,9 @@ def update_case_status(
             detail=f"Invalid status. Allowed values are {ALLOWED_STATUSES}",
         )
 
-    # Retrieve the case by case_id
-    case = db.query(Case).filter(Case.id == update_request.id).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+    case = _get_owned_case_or_404(
+        db=db, case_id=update_request.id, current_user=current_user
+    )
 
     # Update the status
     case.case_status = update_request.case_status
@@ -573,7 +594,7 @@ def update_case_status(
 def update_case_report(
     update_request: UpdateCaseReportRequest,
     db: Session = Depends(deps.get_db),
-    # current_user: models.User = Depends(deps.get_current_active_user),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ):
     # Validate the new status
     if update_request.case_report not in ALLOWED_REPORTS:
@@ -582,10 +603,9 @@ def update_case_report(
             detail=f"Invalid status. Allowed values are {ALLOWED_REPORTS}",
         )
 
-    # Retrieve the case by case_id
-    case = db.query(Case).filter(Case.id == update_request.case_id).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+    case = _get_owned_case_or_404(
+        db=db, case_id=update_request.case_id, current_user=current_user
+    )
 
     # Update the status
     case.case_report = update_request.case_report
@@ -609,7 +629,7 @@ def update_case_report(
 def update_case_status(
     update_request: UpdateCaseStatusRequest,
     db: Session = Depends(deps.get_db),
-    # current_user: models.User = Depends(deps.get_current_active_user),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ):
     # Validate the new status
     if update_request.case_status not in ALLOWED_STATUSES:
@@ -618,13 +638,12 @@ def update_case_status(
             detail=f"Invalid status. Allowed values are {ALLOWED_STATUSES}",
         )
 
-    # Retrieve the case by case_id
-    case = db.query(Case).filter(Case.id == update_request.case_id).first()
-    if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+    case = _get_owned_case_or_404(
+        db=db, case_id=update_request.case_id, current_user=current_user
+    )
 
     # Update the status
-    case.case_report = update_request.case_status
+    case.case_status = update_request.case_status
     case.updated_date = datetime.utcnow()
 
     # Commit the changes
@@ -645,22 +664,28 @@ def update_case_status(
 def get_graph_details(
     filter_request: GraphCaseRequestSchema,
     db: Session = Depends(deps.get_db),
-    # current_user: models.User = Depends(deps.get_current_active_user),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ):
-    return crud.case_crud_obj.get_graph_details(db=db, filter_request=filter_request)
+    return crud.case_crud_obj.get_graph_details(
+        db=db, filter_request=filter_request, user_id=current_user.id
+    )
 
 
 @router.post("/case_suspect_journey")
 def get_suspect_journey_by_case_ids(
     case_id: int,
     db: Session = Depends(deps.get_db),
-    # current_user: models.User = Depends(deps.get_current_active_user),
+    current_user: models.User = Depends(deps.get_current_active_user),
 ):
+    _get_owned_case_or_404(db=db, case_id=case_id, current_user=current_user)
     return crud.case_crud_obj.get_suspect_journey(db=db, case_id=case_id)
 
 
 @router.get("/get_all_cases_by_status", response_model=list)
-def get_all_cases_by_status(db: Session = Depends(deps.get_db)):
+def get_all_cases_by_status(
+    db: Session = Depends(deps.get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+):
     cases = (
         db.query(Case)
         .options(
@@ -670,6 +695,7 @@ def get_all_cases_by_status(db: Session = Depends(deps.get_db)):
         .filter(
             Case.case_report.in_(["OPEN", "ON HOLD"]),
             Case.deleted == False,
+            Case.user_id == current_user.id,
             Case.suspects.any(),  # Ensure the case has at least one suspect
             Case.cameras_rtsp.any(),
         )
@@ -833,9 +859,7 @@ def generate_case_report(
     current_user: models.User = Depends(deps.get_current_active_user),
 ):
     # Fetch case details and suspect journey
-    case_obj = crud.case_crud_obj.get_by_id(db, case_id)
-    if not case_obj:
-        raise HTTPException(status_code=404, detail="Case not found")
+    case_obj = _get_owned_case_or_404(db=db, case_id=case_id, current_user=current_user)
 
     journey = crud.case_crud_obj.get_suspect_journey(case_id=case_id, db=db)
 

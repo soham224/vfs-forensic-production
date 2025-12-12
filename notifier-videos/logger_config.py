@@ -72,7 +72,9 @@ def setup_logger():
         logger.setLevel(logging.DEBUG)
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
-        logger.propagate = False  # prevent messages from bubbling to root and duplicating
+        logger.propagate = (
+            False  # prevent messages from bubbling to root and duplicating
+        )
 
         # Mark as configured to avoid re-adding handlers on subsequent imports
         logger._configured = True  # type: ignore[attr-defined]

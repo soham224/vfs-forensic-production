@@ -19,13 +19,47 @@ class CRUDCase(CRUDBase[Case, CaseCreate, CaseUpdate]):
     def get_multiple_by_ids(self, db: Session, ids: List[int]) -> List[Case]:
         return db.query(self.model).filter(self.model.id.in_(ids)).all()
 
-    def get_by_name(self, db: Session, *, name: str, company_id: int) -> Optional[Case]:
-        return (
+    def get_by_name(
+        self,
+        db: Session,
+        *,
+        name: str,
+        user_id: Optional[int] = None,
+        exclude_id: Optional[int] = None,
+    ) -> Optional[Case]:
+        """
+        Return a case matching the provided name (case-insensitive, trimmed).
+
+        We normalize both the stored name and the input by trimming whitespace
+        and lowercasing, so values like "Demo", " demo ", and "DEMO" are treated
+        as the same for duplicate checks.
+        """
+        normalized_name = name.strip().lower()
+        query = (
             db.query(Case)
-            .filter(Case.case_name == name)
+            .filter(func.lower(func.trim(Case.case_name)) == normalized_name)
             .filter(Case.deleted == False)
-            .first()
         )
+        if user_id is not None:
+            query = query.filter(Case.user_id == user_id)
+        if exclude_id is not None:
+            query = query.filter(Case.id != exclude_id)
+        return query.first()
+
+    def exists_by_normalized_name(
+        self, db: Session, *, normalized_name: str, user_id: Optional[int] = None
+    ) -> bool:
+        """
+        Fast existence check for a normalized (trimmed + lowercased) case name.
+        """
+        query = (
+            db.query(Case.id)
+            .filter(func.lower(func.trim(Case.case_name)) == normalized_name)
+            .filter(Case.deleted == False)
+        )
+        if user_id is not None:
+            query = query.filter(Case.user_id == user_id)
+        return query.first() is not None
 
     def get_all_case(self, db: Session):
         return db.query(Case).filter(Case.deleted == False).all()
@@ -43,7 +77,12 @@ class CRUDCase(CRUDBase[Case, CaseCreate, CaseUpdate]):
             .all()
         )
 
-    def get_graph_details(self, db: Session, filter_request: GraphCaseRequestSchema):
+    def get_graph_details(
+        self,
+        db: Session,
+        filter_request: GraphCaseRequestSchema,
+        user_id: Optional[int] = None,
+    ):
         try:
             duration_type_enum_object = QueryDurationTypeEnum[
                 filter_request.duration_type.upper()
@@ -64,6 +103,8 @@ class CRUDCase(CRUDBase[Case, CaseCreate, CaseUpdate]):
             )
         query = db.query(*get_data_query).select_from(Case)
         query = query.where(Case.deleted == False)
+        if user_id is not None:
+            query = query.where(Case.user_id == user_id)
         if filter_request.start_date and filter_request.end_date:
             query = query.where(
                 Case.created_date.between(

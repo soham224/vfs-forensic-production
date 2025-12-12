@@ -4,8 +4,13 @@ import shutil
 import subprocess
 from datetime import datetime
 from sqlalchemy import text
-from config import logger, INTERNAL_VIDEO_FOLDER_PATH, NGINX_BASE_URL, BASE_PATH, SessionLocal
-
+from config import (
+    logger,
+    INTERNAL_VIDEO_FOLDER_PATH,
+    NGINX_BASE_URL,
+    BASE_PATH,
+    SessionLocal,
+)
 
 
 def get_db_session():
@@ -22,20 +27,21 @@ def convert_to_mp4(input_path, output_path):
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         cmd = [
-            'ffmpeg',
-            '-i', input_path,
-            '-c:v', 'libx264',
-            '-c:a', 'aac',
-            '-strict', 'experimental',
-            '-y',
-            output_path
+            "ffmpeg",
+            "-i",
+            input_path,
+            "-c:v",
+            "libx264",
+            "-c:a",
+            "aac",
+            "-strict",
+            "experimental",
+            "-y",
+            output_path,
         ]
 
         result = subprocess.run(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
+            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
         if result.returncode != 0:
@@ -109,22 +115,26 @@ def copy_and_log_video(file_path):
         # ==================================================================
         session = get_db_session()
 
-        query = text("""
+        query = text(
+            """
             INSERT INTO videos (main_dir, des_video_path, status, created_date, des_url)
             VALUES (:main_dir, :des_video_path, :status, :create_date, :des_url)
-        """)
+        """
+        )
 
-        session.execute(query, {
-            "main_dir": INTERNAL_VIDEO_FOLDER_PATH,
-            "des_video_path": destination_path,
-            "status": 1,
-            "create_date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-            "des_url": video_url,
-        })
+        session.execute(
+            query,
+            {
+                "main_dir": INTERNAL_VIDEO_FOLDER_PATH,
+                "des_video_path": destination_path,
+                "status": 1,
+                "create_date": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                "des_url": video_url,
+            },
+        )
 
         session.commit()
         logger.info(f"DB entry created for MP4: {destination_path}")
 
     except Exception as e:
         logger.error(f"Error in copy_and_log_video: {file_path} -> {e}", exc_info=True)
-

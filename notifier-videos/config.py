@@ -30,6 +30,7 @@ SessionLocal = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine)
 )
 
+
 # Dependency to get DB session
 def get_db():
     db = SessionLocal()
@@ -37,6 +38,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 # NGINX and path configs
 NGINX_BASE_URL = os.getenv("NGINX_BASE_URL")
